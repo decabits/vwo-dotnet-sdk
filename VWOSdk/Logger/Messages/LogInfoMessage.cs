@@ -61,5 +61,13 @@ namespace VWOSdk
         {
             Log.Info($"({file}): Failed impression event for {endPoint} will be retried after {retryTimeout} milliseconds delay");
         }
+
+        public static void NoCustomVariables(string file, string userId, string campaignTestKey, string apiName) {
+            Log.Info($"({file}): In API: {apiName}, for UserId:{userId} preSegments/customVariables are not passed for campaign:{campaignTestKey} and campaign has pre-segmentation");
+        }
+
+        public static void SkippingPreSegmentation(string file, string userId, string campaignTestKey, string apiName) {
+            Log.Info($"({file}): In API: {apiName}, Skipping pre-segmentation for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
+        }
     }
 }

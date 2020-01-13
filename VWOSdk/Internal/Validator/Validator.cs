@@ -25,7 +25,7 @@ namespace VWOSdk
     internal interface IValidator
     {
         bool GetSettings(long accountId, string sdkKey);
-        bool Activate(string campaignTestKey, string userId);
+        bool Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
         bool GetVariation(string campaignTestKey, string userId);
         bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue);
         bool SettingsFile(Settings settingsFile);
@@ -40,10 +40,11 @@ namespace VWOSdk
             return ValidateWithLog(() => ValidateString(sdkKey), nameof(sdkKey), nameof(GetSettings)) && accountIdResult;
         }
 
-        public bool Activate(string campaignTestKey, string userId)
+        public bool Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignTestKeyResult = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(Activate));
-            return ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(Activate)) && campaignTestKeyResult;
+            var customVariables = options["custom_variables"];
+            return ValidateWithLog(() => ValidateString(userId) && campaignTestKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(Activate)); 
         }
 
         public bool GetVariation(string campaignTestKey, string userId)

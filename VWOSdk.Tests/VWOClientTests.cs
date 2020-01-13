@@ -40,9 +40,6 @@ namespace VWOSdk.Tests
             var vwoClient = GetVwoClient(mockValidator: mockValidator);
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
-
-            mockValidator.Verify(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.Activate(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
         }
 
         [Fact]
@@ -109,9 +106,6 @@ namespace VWOSdk.Tests
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver);
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
-
-            mockValidator.Verify(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.Activate(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), It.IsAny<string>()), Times.Once);
@@ -186,9 +180,6 @@ namespace VWOSdk.Tests
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
-
-            mockValidator.Verify(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.Activate(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), It.IsAny<string>()), Times.Once);
@@ -276,9 +267,6 @@ namespace VWOSdk.Tests
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
             Assert.NotNull(result);
             Assert.Equal(MockVariationName, result);
-
-            mockValidator.Verify(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.Activate(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), It.IsAny<string>()), Times.Once);
@@ -462,7 +450,7 @@ namespace VWOSdk.Tests
             return false;
         }
 
-        private IVWOClient GetVwoClient(Mock<IValidator> mockValidator = null, Mock<ICampaignAllocator> mockCampaignResolver = null, Mock<IVariationAllocator> mockVariationResolver = null)
+        private IVWOClient GetVwoClient(Mock<IValidator> mockValidator = null, Mock<ICampaignAllocator> mockCampaignResolver = null, Mock<IVariationAllocator> mockVariationResolver = null, Mock<ISegmentEvaluator> mockSegmentEvaluatorResolver = null)
         {
             mockValidator = mockValidator ?? Mock.GetValidator();
             if (mockCampaignResolver == null)
@@ -476,7 +464,7 @@ namespace VWOSdk.Tests
                 mockVariationResolver = Mock.GetVariationResolver();
                 Mock.SetupResolve(mockVariationResolver, GetVariation());
             }
-            return new VWO(GetSettings(), mockValidator.Object, null, mockCampaignResolver.Object, mockVariationResolver.Object, true);
+            return new VWO(GetSettings(), mockValidator.Object, null, mockCampaignResolver.Object,  mockSegmentEvaluatorResolver.Object, mockVariationResolver.Object, true);
         }
 
         private AccountSettings GetSettings()

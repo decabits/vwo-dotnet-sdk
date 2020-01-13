@@ -41,7 +41,7 @@ namespace VWOSdk.Tests
 
         internal static void SetupActivate(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>()))
+            mockValidator.Setup(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>(), null))
                 .Returns(returnValue);
         }
 

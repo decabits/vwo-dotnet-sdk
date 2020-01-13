@@ -16,6 +16,8 @@
  */
 #pragma warning restore 1587
 
+using System.Collections.Generic;
+
 namespace VWOSdk
 {
     public partial class VWO : IVWOClient
@@ -23,11 +25,12 @@ namespace VWOSdk
         private readonly UserProfileAdapter _userProfileService;
         private readonly ICampaignAllocator _campaignAllocator;
         private readonly IVariationAllocator _variationAllocator;
+        private readonly ISegmentEvaluator _segmentEvaluator;
         private readonly AccountSettings _settings;
         private readonly IValidator _validator;
         private readonly bool _isDevelopmentMode;
 
-        internal VWO(AccountSettings settings, IValidator validator, IUserProfileService userProfileService, ICampaignAllocator campaignAllocator, IVariationAllocator variationAllocator, bool isDevelopmentMode)
+        internal VWO(AccountSettings settings, IValidator validator, IUserProfileService userProfileService, ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator, IVariationAllocator variationAllocator, bool isDevelopmentMode)
         {
             this._settings = settings;
             this._validator = validator;
@@ -35,6 +38,7 @@ namespace VWOSdk
             this._campaignAllocator = campaignAllocator;
             this._variationAllocator = variationAllocator;
             this._isDevelopmentMode = isDevelopmentMode;
+            this._segmentEvaluator = segmentEvaluator;
         }
 
         #region IVWOClient Methodss
@@ -44,13 +48,38 @@ namespace VWOSdk
         /// </summary>
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        public string Activate(string campaignTestKey, string userId)
+        public string Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
-            if (this._validator.Activate(campaignTestKey, userId))
+            if (options == null) options = new Dictionary<string, dynamic>();
+            var customVariables = options["custom_variables"];
+            if (this._validator.Activate(campaignTestKey, userId, options))
             {
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(Activate));
+                    return null;
+                }
+
+                if (campaign.Type != Constants.CampaignTypes.VISUAL_AB) {
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(Activate));
+                    return null;
+                }
+
+                if (campaign.Segments.Count > 0) {
+                    if (!customVariables) {
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Activate));
+                        customVariables = new Dictionary<string, dynamic>();
+                    }
+                    if (!this._segmentEvaluator.evaluate(campaignTestKey, userId, campaign.Segments, customVariables)) {
+                        return null;
+                    }
+                } else {
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Activate));
+                }
                 var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(Activate));
                 if (assignedVariation.Variation != null)
                 {

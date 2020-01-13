@@ -97,5 +97,10 @@ namespace VWOSdk
             Log.Debug($"({file}): impression built for track-goal - {properties}");
         }
 
+         public static void DummyLog(string message)
+        {
+            Log.Debug("Dummy Log - {message}");
+        }
+
     }
 }

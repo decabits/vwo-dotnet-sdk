@@ -60,6 +60,17 @@ namespace VWOSdk
             LogDebugMessage.UserNotPartOfCampaign(file, userId, campaignTestKey, nameof(Allocate));
             return null;
         }
+        /// <summary>
+        /// Get Campaign From Settings using campaignTestKey
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="campaignTestKey"></param>
+        /// <returns></returns>
+        public BucketedCampaign GetCampaign(AccountSettings settings, string campaignTestKey)
+        {
+            BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignTestKey));
+            return requestedCampaign;
+        }
 
         /// <summary>
         /// Allocate Campaign based on userProfileMap, of if userProfileMap is not present based on trafficAllocation.

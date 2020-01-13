@@ -16,6 +16,8 @@
  */
 #pragma warning restore 1587
 
+using System.Collections.Generic;
+
 namespace VWOSdk
 {
     public interface IVWOClient
@@ -25,10 +27,11 @@ namespace VWOSdk
         /// </summary>
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        string Activate(string campaignTestKey, string userId);
+        string Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Activates a server-side A/B test for the specified user for a particular running campaign.

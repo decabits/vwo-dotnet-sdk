@@ -37,7 +37,9 @@
     <Compile Include="..\VWOSdk\Internal\Contract\ISettingsProcessor.cs" Link="Internal\Contract\ISettingsProcessor.cs" />
     <Compile Include="..\VWOSdk\Internal\Contract\IUserHasher.cs" Link="Internal\Contract\IUserHasher.cs" />
     <Compile Include="..\VWOSdk\Internal\Contract\IVariationAllocator.cs" Link="Internal\Contract\IVariationAllocator.cs" />
+    <Compile Include="..\VWOSdk\Internal\Contract\ISegmentEvaluator.cs" Link="Internal\Contract\ISegmentEvaluator.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\CampaignResolver.cs" Link="Internal\Core\CampaignResolver.cs" />
+    <Compile Include="..\VWOSdk\Internal\Core\SegmentEvaluator.cs" Link="Internal\Core\SegmentEvaluator.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\Murmur32Hasher.cs" Link="Internal\Core\Murmur32Hasher.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\SettingsProcessor.cs" Link="Internal\Core\SettingsProcessor.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\VariationAllocator.cs" Link="Internal\Core\VariationAllocator.cs" />
@@ -71,6 +73,7 @@
     <PackageReference Include="Identifiable" Version="4.0.0" />
     <PackageReference Include="murmurhash" Version="1.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>

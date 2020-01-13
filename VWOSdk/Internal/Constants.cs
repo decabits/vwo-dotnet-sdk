@@ -40,5 +40,17 @@ namespace VWOSdk
             internal static readonly string TRACK_USER = "track-user";
             internal static readonly string TRACK_GOAL = "track-goal";
         }
+
+        public static class CampaignStatus
+        {
+            internal static readonly string RUNNING = "RUNNING";
+        }
+
+        public static class CampaignTypes
+        {
+            internal static readonly string VISUAL_AB = "VISUAL_AB";
+            internal static readonly string FEATURE_TEST = "FEATURE_TEST";
+            internal static readonly string FEATURE_ROLLOUT = "FEATURE_ROLLOUT";
+        }
     }
 }

@@ -57,6 +57,10 @@ namespace VWOSdk
         //{
         //    Log.Error($"({file}): \"track\" API has corrupted configuration");
         //}
+
+        public static void InvalidApi(string file, string campaignType, string userId, string campaignTestKey, string apiName) {
+            Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} in campaign ID: {campaignTestKey} having campaign type: {campaignType}.");
+        }
         public static void TrackApiVariationNotFound(string file, string campaignTestKey, string userId)
         {
             Log.Error($"({file}): Variation not found for campaign:{campaignTestKey} and userId:{userId}");

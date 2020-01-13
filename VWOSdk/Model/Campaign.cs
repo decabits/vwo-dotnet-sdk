@@ -24,7 +24,7 @@ namespace VWOSdk
     public class Campaign
     {
         [JsonConstructor]
-        internal Campaign(int id, double PercentTraffic, string Key, string Status, string Type, List<Goal> goals, List<Variation> variations)
+        internal Campaign(int id, double PercentTraffic, string Key, string Status, string Type, List<Goal> goals, List<Variation> variations, Dictionary<string, dynamic> segments)
         {
             this.PercentTraffic = PercentTraffic;
             this.Key = Key;
@@ -33,6 +33,7 @@ namespace VWOSdk
             this.Id = id;
             this.Goals = goals;
             this.Variations = variations;
+            this.Segments = segments;
         }
 
         public IReadOnlyList<Goal> Goals { get; internal set; }
@@ -42,5 +43,6 @@ namespace VWOSdk
         public string Key { get; internal set; }
         public string Status { get; internal set; }
         public string Type { get; internal set; }
+        public Dictionary<string, dynamic> Segments { get; internal set; }
     }
 }

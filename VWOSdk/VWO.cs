@@ -24,6 +24,7 @@ namespace VWOSdk
         private static readonly IBucketService UserHasher;
         private static readonly ICampaignAllocator CampaignAllocator;
         private static readonly IVariationAllocator VariationAllocator;
+        private static readonly ISegmentEvaluator SegmentEvaluator;
         private static ISettingsProcessor SettingsProcessor;
         private static readonly string file = typeof(VWO).FullName;
 
@@ -36,6 +37,7 @@ namespace VWOSdk
             UserHasher = new Murmur32BucketService();
             CampaignAllocator = new CampaignAllocator(UserHasher);
             VariationAllocator = new VariationAllocator(UserHasher);
+            SegmentEvaluator = new SegmentEvaluator();
             SettingsProcessor = new SettingsProcessor();
         }
 
@@ -120,7 +122,7 @@ namespace VWOSdk
                 if(isDevelopmentMode)
                     LogDebugMessage.SetDevelopmentMode(file);
 
-                var vwoClient = new VWO(accountSettings, Validator, userProfileService, CampaignAllocator, VariationAllocator, isDevelopmentMode);
+                var vwoClient = new VWO(accountSettings, Validator, userProfileService, CampaignAllocator, SegmentEvaluator, VariationAllocator, isDevelopmentMode);
                 LogDebugMessage.SdkInitialized(file);
                 return vwoClient;
             }
