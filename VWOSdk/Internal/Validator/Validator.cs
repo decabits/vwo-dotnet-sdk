@@ -26,7 +26,7 @@ namespace VWOSdk
     {
         bool GetSettings(long accountId, string sdkKey);
         bool Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
-        bool GetVariation(string campaignTestKey, string userId);
+        bool GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
         bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue);
         bool SettingsFile(Settings settingsFile);
     }
@@ -47,7 +47,7 @@ namespace VWOSdk
             return ValidateWithLog(() => ValidateString(userId) && campaignTestKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(Activate)); 
         }
 
-        public bool GetVariation(string campaignTestKey, string userId)
+        public bool GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignTestKeyResult = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(GetVariation));
             return ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(GetVariation)) && campaignTestKeyResult;

@@ -96,14 +96,48 @@ namespace VWOSdk
         /// </summary>
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        public string GetVariation(string campaignTestKey, string userId)
+        public string GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
-            if (this._validator.GetVariation(campaignTestKey, userId))
+            if (options == null) options = new Dictionary<string, dynamic>();
+            var customVariables = options["custom_variables"];
+            if (this._validator.GetVariation(campaignTestKey, userId, options))
             {
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                if (this._validator.GetVariation(campaignTestKey, userId, options))
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(GetVariation));
+                    return null;
+                }
+
+                if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetVariation));
+                    return null;
+                }
+
+                if (campaign.Segments.Count > 0) {
+                    if (!customVariables) {
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
+                        customVariables = new Dictionary<string, dynamic>();
+                    }
+                    if (!this._segmentEvaluator.evaluate(campaignTestKey, userId, campaign.Segments, customVariables)) {
+                        return null;
+                    }
+                } else {
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
+                }
+
+            
                 var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(GetVariation));
+                if (assignedVariation.Variation != null)
+                {
+                    var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
+                    trackUserRequest.ExecuteAsync();
+                    return assignedVariation.Variation.Name;
+                }
                 return assignedVariation.Variation?.Name;
             }
             return null;

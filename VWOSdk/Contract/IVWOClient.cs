@@ -41,7 +41,7 @@ namespace VWOSdk
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        string GetVariation(string campaignTestKey, string userId);
+        string GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Tracks a conversion event for a particular user for a running server-side campaign.
