@@ -38,6 +38,7 @@ namespace VWOSdk
         /// </summary>
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
@@ -55,7 +56,7 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue = null);
+        bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue = null, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Tracks a conversion event for a particular user for a running server-side campaign.

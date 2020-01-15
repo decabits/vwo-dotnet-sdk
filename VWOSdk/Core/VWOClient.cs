@@ -108,11 +108,11 @@ namespace VWOSdk
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
                 if (campaign.Status != Constants.CampaignStatus.RUNNING) {
-                if (this._validator.GetVariation(campaignTestKey, userId, options))
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(GetVariation));
                     return null;
                 }
 
+                
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetVariation));
                     return null;
@@ -150,15 +150,43 @@ namespace VWOSdk
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
         /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// A boolean value based on whether the impression was made to the VWO server.
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue = null)
+        public bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue = null, Dictionary<string, dynamic> options = null)
         {
-            if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue))
+            if (options == null) options = new Dictionary<string, dynamic>();
+            var revenueValues = options["revenue_values"];
+            var customVariables = options["custom_variables"];
+            if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue, options))
             {
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(Track));
+                    return false;
+                }
+
+                if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(Track));
+                    return false;
+                }
+
+                if (campaign.Segments.Count > 0) {
+                    if (!customVariables) {
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Track));
+                        customVariables = new Dictionary<string, dynamic>();
+                    }
+                    if (!this._segmentEvaluator.evaluate(campaignTestKey, userId, campaign.Segments, customVariables)) {
+                        return false;
+                    }
+                } else {
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
+                }
+
+
                 var assignedVariation = this.AllocateVariation(campaignTestKey, userId, goalIdentifier: goalIdentifier, apiName: nameof(Track));
                 var variationName = assignedVariation.Variation?.Name;
                 var selectedGoalIdentifier = assignedVariation.Goal?.Identifier;

@@ -27,7 +27,7 @@ namespace VWOSdk
         bool GetSettings(long accountId, string sdkKey);
         bool Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
         bool GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
-        bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue);
+        bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue, Dictionary<string, dynamic> options = null);
         bool SettingsFile(Settings settingsFile);
     }
 
@@ -50,16 +50,17 @@ namespace VWOSdk
         public bool GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignTestKeyResult = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(GetVariation));
-            return ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(GetVariation)) && campaignTestKeyResult;
+            var customVariables = options["custom_variables"];
+            return ValidateWithLog(() => ValidateString(userId) && campaignTestKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
         }
 
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue)
+        public bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue, Dictionary<string, dynamic> options = null) 
         {
             var result = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(Track));
             result = ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(Track)) && result;
             result = ValidateWithLog(() => ValidateString(goalIdentifier), nameof(goalIdentifier), nameof(Track)) && result;
-
-            return ValidateWithLog(() => ValidateNullableFloat(revenueValue), nameof(revenueValue), nameof(Track)) && result;
+            var customVariables = options["custom_variables"];
+            return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(revenueValue), nameof(Track)) && result;
         }
 
         public bool SettingsFile(Settings settingsFile)
