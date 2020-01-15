@@ -69,5 +69,13 @@ namespace VWOSdk
         public static void SkippingPreSegmentation(string file, string userId, string campaignTestKey, string apiName) {
             Log.Info($"({file}): In API: {apiName}, Skipping pre-segmentation for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
         }
+
+        public static void FeatureEnabledForUser(string file, string userId, string campaignTestKey, string apiName) {
+            Log.Info($"({file}): In API: {apiName}, for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
+        }
+
+        public static void FeatureNotEnabledForUser(string file, string userId, string campaignTestKey, string apiName) {
+            Log.Info($"({file}): In API: {apiName}, for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
+        }
     }
 }

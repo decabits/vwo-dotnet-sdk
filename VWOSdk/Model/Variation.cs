@@ -23,17 +23,19 @@ namespace VWOSdk
     public class Variation
     {
         [JsonConstructor]
-        internal Variation(int id, string name, Changes changes, double weight)
+        internal Variation(int id, string name, Changes changes, double weight, bool IsFeatureEnabled)
         {
             this.Id = id;
             this.Name = name;
             this.Changes = changes;
             this.Weight = weight;
+            this.IsFeatureEnabled = IsFeatureEnabled;
         }
 
         public int Id { get; internal set; }
         public string Name { get; internal set; }
         public Changes Changes { get; internal set; }
         public double Weight { get; internal set; }
+        public bool IsFeatureEnabled { get; internal set; }
     }
 }

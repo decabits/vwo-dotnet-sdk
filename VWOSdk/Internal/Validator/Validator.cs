@@ -63,6 +63,13 @@ namespace VWOSdk
             return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(revenueValue), nameof(Track)) && result;
         }
 
+        public bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
+        {
+            var campaignTestKeyResult = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(GetVariation));
+            var customVariables = options["custom_variables"];
+            return ValidateWithLog(() => ValidateString(userId) && campaignTestKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
+        }
+
         public bool SettingsFile(Settings settingsFile)
         {
             var result = NotNull(settingsFile);

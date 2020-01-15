@@ -228,14 +228,15 @@ namespace VWOSdk
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
         /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// A boolean value based on whether the impression was made to the VWO server.
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, int revenueValue)
+        public bool Track(string campaignTestKey, string userId, string goalIdentifier, int revenueValue, Dictionary<string, dynamic> options = null)
         {
-            return this.Track(campaignTestKey, userId, goalIdentifier, revenueValue.ToString());
+            return this.Track(campaignTestKey, userId, goalIdentifier, revenueValue.ToString(), options);
         }
 
         /// <summary>
@@ -245,16 +246,82 @@ namespace VWOSdk
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
         /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// A boolean value based on whether the impression was made to the VWO server.
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, float revenueValue)
+        public bool Track(string campaignTestKey, string userId, string goalIdentifier, float revenueValue, Dictionary<string, dynamic> options = null)
         {
-            return this.Track(campaignTestKey, userId, goalIdentifier, revenueValue.ToString());
+            return this.Track(campaignTestKey, userId, goalIdentifier, revenueValue.ToString(), options );
         }
 
+
+        /// <summary>
+        /// Identifies whether the user becomes a part of feature rollout/test or not.
+        /// </summary>
+        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server for report generation.
+        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+        public bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
+        {
+            if (options == null) options = new Dictionary<string, dynamic>();
+            var customVariables = options["custom_variables"];
+            if (this._validator.GetVariation(campaignTestKey, userId, options))
+            {
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(IsFeatureEnabled));
+                    return false;
+                }
+            
+                if (campaign.Type == Constants.CampaignTypes.VISUAL_AB) {
+                    return false;
+                }
+
+                if (campaign.Segments.Count > 0) {
+                    if (!customVariables) {
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                        customVariables = new Dictionary<string, dynamic>();
+                    }
+                    if (!this._segmentEvaluator.evaluate(campaignTestKey, userId, campaign.Segments, customVariables)) {
+                        return false;
+                    }
+                } else {
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                }
+
+                var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(IsFeatureEnabled));
+                if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST) {
+                    if (assignedVariation.Variation != null)
+                    {
+                        var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
+                        trackUserRequest.ExecuteAsync();
+                        var result = assignedVariation.Variation.IsFeatureEnabled;
+
+                        if(result)
+                        {
+                           LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled)); 
+                        }
+                        else
+                        {
+                            LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                        }
+                    return result;
+                    }
+                    
+                }
+            }
+            return true;
+        }
+
+      
         #endregion IVWOClient Methods
 
         #region private Methods
