@@ -107,5 +107,13 @@ namespace VWOSdk
             Log.Error($"({file}): custom logger is provided but seems to have misconfigured. please check the api docs. using default logger.");
         }
 
+        public static void TagKeyLengthExceeded(string file, string tagkey, string userId,  string apiName) {
+            Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} ");
+        }
+
+        public static void TagValueLengthExceeded(string file, string tagkey, string userId,  string apiName) {
+            Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} ");
+        }
+
     }
 }

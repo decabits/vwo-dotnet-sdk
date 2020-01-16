@@ -321,7 +321,38 @@ namespace VWOSdk
             return true;
         }
 
-      
+        /// <summary>
+        /// Makes a call to our server to store the tag_values
+        /// </summary>
+        /// <param name="tagKey">key name of the tag</param>
+        /// <param name="tagValue">value of the tag</param>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <returns>
+        /// /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server for report generation.
+        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+        public bool Push(dynamic tagKey, dynamic tagValue, string userId)
+        {
+            if (this._validator.Push(tagKey, tagValue, userId)) 
+            {
+                if(tagKey.Length > (Constants.PushApi.TAG_KEY_LENGTH)) {
+                    LogErrorMessage.TagKeyLengthExceeded(typeof(IVWOClient).FullName, userId, tagKey, nameof(IsFeatureEnabled));
+                    return false;
+                }
+
+                if(tagValue.Length > (Constants.PushApi.TAG_VALUE_LENGTH)) {
+                    LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, userId, tagKey, nameof(IsFeatureEnabled));
+                    return false;
+                }
+            }
+            //util is left 
+        return true;    
+        }
+
+
+
+
         #endregion IVWOClient Methods
 
         #region private Methods

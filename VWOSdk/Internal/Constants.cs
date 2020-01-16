@@ -53,6 +53,12 @@ namespace VWOSdk
             internal static readonly string FEATURE_ROLLOUT = "FEATURE_ROLLOUT";
         }
 
+        public static class PushApi
+        {
+            internal static readonly string TAG_KEY_LENGTH = "TAG_KEY_LENGTH";
+            internal static readonly string TAG_VALUE_LENGTH = "TAG_VALUE_LENGTH";
+        }
+
         public static class OperatorTypes
         {
             internal const string AND = "and";
