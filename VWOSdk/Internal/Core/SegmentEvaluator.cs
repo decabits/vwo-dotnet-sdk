@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VWOSdk
 {
@@ -24,10 +25,44 @@ namespace VWOSdk
     {
         private static readonly string file = typeof(SegmentEvaluator).FullName;
 
-        internal SegmentEvaluator()
-        {}
+        private readonly OperandEvaluator operandEvaluator;
+
+        internal SegmentEvaluator() {
+            this.operandEvaluator = new OperandEvaluator();
+        }
         public bool evaluate(string campaignTestKey, string userId, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables) {
-            return true;
+            var result = this.evaluateSegment(segments, customVariables);
+            return result;
+        }
+
+        private bool evaluateSegment(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables) {
+            if (segments.Count == 0) {
+                return true;
+            }
+            var segmentOperator = segments.Keys.First();
+            var subSegments = segments[segmentOperator];
+            switch(segmentOperator) {
+                case Constants.OperatorTypes.NOT:
+                    return !this.evaluateSegment(subSegments, customVariables);
+                case Constants.OperatorTypes.AND:
+                    foreach(var subSegment in subSegments) {
+                        if (!this.evaluateSegment(subSegment, customVariables)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                case Constants.OperatorTypes.OR:
+                    foreach(var subSegment in subSegments) {
+                        if (this.evaluateSegment(subSegment, customVariables)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case Constants.OperandTypes.CUSTOM_VARIABLE:
+                    return this.operandEvaluator.evaluateOperand(subSegments, customVariables);
+                default:
+                    return true;
+            }
         }
     }
 }

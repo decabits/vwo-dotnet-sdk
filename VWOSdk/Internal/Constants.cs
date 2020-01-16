@@ -52,5 +52,41 @@ namespace VWOSdk
             internal static readonly string FEATURE_TEST = "FEATURE_TEST";
             internal static readonly string FEATURE_ROLLOUT = "FEATURE_ROLLOUT";
         }
+
+        public static class OperatorTypes
+        {
+            internal const string AND = "and";
+            internal const string OR = "or";
+            internal const string NOT = "not";
+        }
+
+        public static class OperandTypes
+        {
+            internal const string CUSTOM_VARIABLE = "custom_variable";
+        }
+
+        public static class OperandValueTypesName
+        {
+            internal const string REGEX = "regex";
+            internal const string WILDCARD = "wildcard";
+            internal const string LOWER = "lower";
+            internal const string EQUALS = "equals";
+        }
+
+        public static class OperandValueTypes
+        {
+            internal const string LOWER = "lower";
+            internal const string CONTAINS = "contains";
+            internal const string STARTS_WITH = "starts_with";
+            internal const string ENDS_WITH = "ends_with";
+            internal const string REGEX = "regex";
+            internal const string EQUALS = "equals";
+        }
+
+        public static class OperandValueBooleanTypes
+        {
+            internal const string TRUE = "true";
+            internal const string FALSE = "false";
+        }
     }
 }
