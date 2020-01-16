@@ -40,6 +40,7 @@
     <Compile Include="..\VWOSdk\Internal\Contract\ISegmentEvaluator.cs" Link="Internal\Contract\ISegmentEvaluator.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\CampaignResolver.cs" Link="Internal\Core\CampaignResolver.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\SegmentEvaluator.cs" Link="Internal\Core\SegmentEvaluator.cs" />
+    <Compile Include="..\VWOSdk\Internal\Core\OperandEvaluator.cs" Link="Internal\Core\OperandEvaluator.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\Murmur32Hasher.cs" Link="Internal\Core\Murmur32Hasher.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\SettingsProcessor.cs" Link="Internal\Core\SettingsProcessor.cs" />
     <Compile Include="..\VWOSdk\Internal\Core\VariationAllocator.cs" Link="Internal\Core\VariationAllocator.cs" />
