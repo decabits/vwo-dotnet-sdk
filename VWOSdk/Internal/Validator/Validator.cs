@@ -28,7 +28,9 @@ namespace VWOSdk
         bool Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
         bool GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
         bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue, Dictionary<string, dynamic> options = null);
-        bool Push(string tagKey, string tagValue, string userId);
+        bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
+        bool GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
+        bool Push(dynamic tagKey, dynamic tagValue, string userId);
         bool SettingsFile(Settings settingsFile);
     }
 
@@ -71,7 +73,14 @@ namespace VWOSdk
             return ValidateWithLog(() => ValidateString(userId) && campaignTestKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
         }
 
-        public bool Push(string tagKey, string tagValue, string userId)
+        public bool GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
+        {
+            var campaignTestKeyResult = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(GetVariation));
+            var customVariables = options["custom_variables"];
+            return ValidateWithLog(() => ValidateString(userId) && campaignTestKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
+        }
+
+        public bool Push(dynamic tagKey, dynamic tagValue, string userId)
         {
             return ValidateWithLog(() => ValidateString(tagKey) && ValidateString(tagValue) && ValidateString(userId), nameof(tagKey) , nameof(Push));   
         }

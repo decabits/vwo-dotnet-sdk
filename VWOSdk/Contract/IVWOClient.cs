@@ -102,6 +102,18 @@ namespace VWOSdk
         /// </returns>
          bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
 
+        /// <summary>
+        /// Returns the feature variable corresponding to the variable_key passed. It typecasts the value to the corresponding value type found in settings_file
+        /// </summary>
+        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="variableKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
+        /// </returns>
+         string GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
+
          /// <summary>
         /// Makes a call to our server to store the tag_values
         /// </summary>

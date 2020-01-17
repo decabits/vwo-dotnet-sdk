@@ -282,6 +282,7 @@ namespace VWOSdk
                 }
             
                 if (campaign.Type == Constants.CampaignTypes.VISUAL_AB) {
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(IsFeatureEnabled));
                     return false;
                 }
 
@@ -320,6 +321,40 @@ namespace VWOSdk
             }
             return true;
         }
+
+        /// <summary>
+        /// Returns the feature variable corresponding to the variable_key passed. It typecasts the value to the corresponding value type found in settings_file
+        /// </summary>
+        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="variableKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
+        /// </returns>
+        public string GetFeatureVariableValue(string campaignTestKey,string variableKey, string userId, Dictionary<string, dynamic> options = null)
+        {
+            if (options == null) options = new Dictionary<string, dynamic>();
+            var customVariables = options["custom_variables"];
+            if (this._validator.GetFeatureVariableValue(campaignTestKey, variableKey, userId, options))
+            {
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(GetFeatureVariableValue));
+                    return null;
+                }
+
+                if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                    return null;
+                }
+
+            }
+
+        return null;
+
+        }
+
 
         /// <summary>
         /// Makes a call to our server to store the tag_values
