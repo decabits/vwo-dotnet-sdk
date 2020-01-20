@@ -28,6 +28,7 @@ namespace VWOSdk
         private static readonly string SettingsVerb = Constants.Endpoints.ACCOUNT_SETTINGS;
         private static readonly string TrackUserVerb = Constants.Endpoints.TRACK_USER;
         private static readonly string TrackGoalVerb = Constants.Endpoints.TRACK_GOAL;
+        private static readonly string PushTagsVerb = Constants.Endpoints.PUSH_TAGS;
         private static readonly string file = typeof(ServerSideVerb).FullName;
         private static readonly string sdkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -66,6 +67,17 @@ namespace VWOSdk
             return trackUserRequest;
         }
 
+        internal static ApiRequest PushTags(AccountSettings settings, string tagKey, string tagValue, string userId, bool isDevelopmentMode) {
+            string queryParams = GetQueryParamertersForPushTag(settings, tagKey, tagValue, userId);
+            var trackPushRequest = new ApiRequest(Method.GET, isDevelopmentMode)
+            {
+                Uri = new Uri($"{Host}/{Verb}/{TrackGoalVerb}?{queryParams}"),
+            };
+            trackPushRequest.WithCaller(AppContext.ApiCaller);
+            LogDebugMessage.ImpressionForPushTag(file, queryParams);
+            return trackPushRequest;
+        }
+
         private static string GetQueryParamertersForTrackGoal(int accountId, int campaignId, int variationId, string userId, int goalId, string revenueValue = null)
         {
             return $"{GetAccountIdQuery(accountId)}" +
@@ -80,7 +92,17 @@ namespace VWOSdk
                 $"&{GetRevenueQuery(revenueValue)}" +
                 $"&{GetSdkQuery()}";
         }
-
+        private static string GetQueryParamertersForPushTag(AccountSettings settings, string tagKey, string tagValue, string userId)
+        {
+            return $"{GetAccountIdQuery(settings.AccountId)}" +
+                $"&{GetPlatformQuery()}" +
+                $"&{GetRandomQuery()}" +
+                $"&{GetUnixTimeStamp()}" +
+                $"&{GetUuidQuery(userId, settings.AccountId)}" +
+                $"&{GetUserIdQuery(userId)}" +
+                $"&{GetUserTagQuery(tagKey, tagValue)}" +
+                $"&{GetSdkQuery()}";
+        }
         private static string GetRevenueQuery(string revenueValue)
         {
             if (string.IsNullOrEmpty(revenueValue))
@@ -114,13 +136,16 @@ namespace VWOSdk
                 $"&{GetUnixTimeStamp()}" +
                 $"&{GetUuidQuery(userId, accountId)}" +
                 $"&{GetUserIdQuery(userId)}" +
-                $"&{GetEdQuery()}" +
                 $"&{GetSdkQuery()}";
         }
 
         private static string GetEdQuery()
         {
             return "ed={\"p\":\"server\"}";
+        }
+
+        private static string GetUserTagQuery(string tagKey, string tagValue) {
+            return $"u={{\"{tagKey}\":\"{tagValue}\"}}";
         }
 
         private static string GetUuidQuery(string userId, long accountId)
