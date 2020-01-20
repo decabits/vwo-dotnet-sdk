@@ -17,19 +17,21 @@
 #pragma warning restore 1587
 
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace VWOSdk
 {
     public class Variation
     {
         [JsonConstructor]
-        internal Variation(int id, string name, Changes changes, double weight, bool IsFeatureEnabled)
+        internal Variation(int id, string name, Changes changes, double weight, bool IsFeatureEnabled, List<Dictionary<string, dynamic>> Variables)
         {
             this.Id = id;
             this.Name = name;
             this.Changes = changes;
             this.Weight = weight;
             this.IsFeatureEnabled = IsFeatureEnabled;
+            this.Variables = Variables;
         }
 
         public int Id { get; internal set; }
@@ -37,5 +39,6 @@ namespace VWOSdk
         public Changes Changes { get; internal set; }
         public double Weight { get; internal set; }
         public bool IsFeatureEnabled { get; internal set; }
+        public List<Dictionary<string, dynamic>> Variables { get; internal set; }
     }
 }

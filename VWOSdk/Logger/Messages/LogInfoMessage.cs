@@ -70,12 +70,19 @@ namespace VWOSdk
             Log.Info($"({file}): In API: {apiName}, Skipping pre-segmentation for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
         }
 
-        public static void FeatureEnabledForUser(string file, string userId, string campaignTestKey, string apiName) {
-            Log.Info($"({file}): In API: {apiName}, for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
+        public static void FeatureEnabledForUser(string file, string userId, string featureKey, string apiName) 
+        {
+            Log.Info($"({file}): In API: {apiName} Feature having feature-key:{featureKey} for user ID:{userId} is enabled");
         }
 
-        public static void FeatureNotEnabledForUser(string file, string userId, string campaignTestKey, string apiName) {
-            Log.Info($"({file}): In API: {apiName}, for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
+        public static void FeatureNotEnabledForUser(string file, string userId, string featureKey, string apiName)
+        {
+            Log.Error($"({file}): In API: {apiName} Feature having feature-key:{featureKey} for user ID:{userId} is not enabled");
+        }
+
+        public static void VariableFound(string file, string userId,string campaignType, string campaignTestKey, string variableKey, string apiName)
+        {
+            Log.Error($"({file}): In API: {apiName} Value for variable:{variableKey} of campaign:{campaignTestKey} and campaign type: {campaignType} for user:{userId}");
         }
     }
 }

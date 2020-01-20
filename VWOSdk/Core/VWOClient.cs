@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VWOSdk
 {
@@ -312,7 +313,7 @@ namespace VWOSdk
                         }
                         else
                         {
-                            LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                           LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
                         }
                     return result;
                     }
@@ -332,10 +333,13 @@ namespace VWOSdk
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        public string GetFeatureVariableValue(string campaignTestKey,string variableKey, string userId, Dictionary<string, dynamic> options = null)
+        public dynamic GetFeatureVariableValue(string campaignTestKey,string variableKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             var customVariables = options["custom_variables"];
+            var variables = new List<Dictionary<string, dynamic>>();
+            var variable = new Dictionary<string, dynamic>();
+
             if (this._validator.GetFeatureVariableValue(campaignTestKey, variableKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -347,12 +351,54 @@ namespace VWOSdk
                 if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                     return null;
+                }  
+
+                if (campaign.Segments.Count > 0)
+                {
+                    if (!customVariables)
+                    {
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                        customVariables = new Dictionary<string, dynamic>();
+                    } 
+                    if (!this._segmentEvaluator.evaluate(campaignTestKey, userId, campaign.Segments, customVariables)) {
+                        return null;
+                    }
+                } else 
+                {
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                 }
 
+                var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(GetFeatureVariableValue));
+                if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT)
+                {
+                   variables = campaign.Variables;
+                }
+                else if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST)
+                {
+                    if (!assignedVariation.Variation.IsFeatureEnabled)
+                    {
+                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                        assignedVariation = this.GetControlVariation(campaign, campaign.Variations.Find(1, (new VariationAllocator()).GetVariationId));
+                    }
+                    else
+                    {
+                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                        variables = assignedVariation.Variation.Variables;
+                    }
+                }
+
+                variable = this.GetVariable(variables, variableKey);
+                if (variable.Count == 0)
+                {
+                   LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, campaign.Type, userId, variableKey, campaignTestKey, nameof(GetFeatureVariableValue));
+                   return null; 
+                }
+                else
+                {
+                    LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, campaign.Type, userId, variableKey,campaignTestKey, nameof(GetFeatureVariableValue));
+                }
             }
-
-        return null;
-
+            return this._segmentEvaluator.getTypeCastedFeatureValue(variable["value"], variable["type"]);
         }
 
 
@@ -417,6 +463,14 @@ namespace VWOSdk
 
             LogInfoMessage.NoVariationAllocated(file, userId, campaignTestKey);
             return new UserAllocationInfo();
+        }
+
+        private UserAllocationInfo GetControlVariation(BucketedCampaign campaign, Variation variation) {
+            return new UserAllocationInfo();
+        }
+
+        private Dictionary<string, dynamic> GetVariable(List<Dictionary<string, dynamic>> Variables, string VariableKey) {
+            return Variables.Find(variable => variable.Keys.First() == VariableKey);
         }
 
         /// <summary>

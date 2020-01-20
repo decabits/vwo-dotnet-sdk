@@ -61,6 +61,10 @@ namespace VWOSdk
         public static void InvalidApi(string file, string campaignType, string userId, string campaignTestKey, string apiName) {
             Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} in campaign ID: {campaignTestKey} having campaign type: {campaignType}.");
         }
+        public static void VariableNotFound(string file, string campaignType, string userId, string campaignTestKey, string variableKey, string apiName) {
+            Log.Error($"({file}): In API: {apiName} Variable: {variableKey} not found for campaign: {campaignTestKey} and type: {campaignType} for user ID: {userId}.");
+        }
+        
         public static void TrackApiVariationNotFound(string file, string campaignTestKey, string userId)
         {
             Log.Error($"({file}): Variation not found for campaign:{campaignTestKey} and userId:{userId}");
@@ -78,6 +82,10 @@ namespace VWOSdk
         public static void SaveUserProfileServiceFailed(string file, string userId)
         {
             Log.Error($"({file}): Saving data into UserProfileService failed for userId:{userId}");
+        }
+        public static void UnableToTypeCast(string file, string value, string variableType, string ofType)
+        {
+            Log.Error($"(%<file>s): Unable to typecast value: {value} of type: {ofType} to type: {variableType}.");
         }
         //public static void InvalidCampaign(string file, string method)
         //{
@@ -107,12 +115,12 @@ namespace VWOSdk
             Log.Error($"({file}): custom logger is provided but seems to have misconfigured. please check the api docs. using default logger.");
         }
 
-        public static void TagKeyLengthExceeded(string file, string tagkey, string userId,  string apiName) {
-            Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} ");
+        public static void TagKeyLengthExceeded(string file, string tagKey, string userId,  string apiName) {
+            Log.Error($"({file}): In API: {apiName}, the length of tag_key:{tagKey} and userID: {userId} can not be greater than 255");
         }
 
-        public static void TagValueLengthExceeded(string file, string tagkey, string userId,  string apiName) {
-            Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} ");
+        public static void TagValueLengthExceeded(string file, string tagValue, string userId,  string apiName) {
+            Log.Error($"({file}): In API: {apiName}, the length of tag_value:{tagValue} and userID: {userId} can not be greater than 255");
         }
 
     }

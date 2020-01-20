@@ -35,6 +35,35 @@ namespace VWOSdk
             return result;
         }
 
+        public dynamic getTypeCastedFeatureValue(dynamic value, string variableType) {
+            try {
+                if (value.GetType().Name == Constants.DOTNET_VARIABLE_TYPES.VALUES[variableType])
+                {
+                    return value;
+                }
+                if (variableType == Constants.VARIABLE_TYPES.STRING)
+                {
+                    return value.toString();
+                }
+                if (variableType == Constants.VARIABLE_TYPES.INTEGER)
+                {
+                    return (int)value;
+                }
+                if (variableType== Constants.VARIABLE_TYPES.DOUBLE)
+                {
+                    return (double)value;
+                }
+                if (variableType == Constants.VARIABLE_TYPES.BOOLEAN)
+                {
+                    if (value != null) return (bool)value;
+                }
+                return value;
+            } catch {
+                LogErrorMessage.UnableToTypeCast(typeof(IVWOClient).FullName, value, variableType, value.GetType().Name);
+                return null;
+            }
+        }
+
         private bool evaluateSegment(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables) {
             if (segments.Count == 0) {
                 return true;

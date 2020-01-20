@@ -23,5 +23,6 @@ namespace VWOSdk
     internal interface ISegmentEvaluator
     {
         bool evaluate(string campaignTestKey, string userId, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables);
+        dynamic getTypeCastedFeatureValue(dynamic value, string variableType);
     }
 }

@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 #pragma warning restore 1587
+
+using System.Collections.Generic;
+
 namespace VWOSdk
 {
     internal class Constants
@@ -94,6 +97,25 @@ namespace VWOSdk
         {
             internal const string TRUE = "true";
             internal const string FALSE = "false";
+        }
+
+        public static class DOTNET_VARIABLE_TYPES
+        {
+            internal static Dictionary<string, string> VALUES = new Dictionary<string, string>() {
+                {"string", "string"},
+                {"integer", "int"},
+                {"double", "double"},
+                {"boolean", "bool"}
+            };
+        }
+
+        public static class VARIABLE_TYPES
+        {
+            internal const string STRING = "string";
+            internal const string INTEGER = "integer";
+            internal const string DOUBLE = "double";
+            internal const string BOOLEAN = "boolean";
+
         }
     }
 }
