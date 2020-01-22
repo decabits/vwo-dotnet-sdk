@@ -112,7 +112,7 @@ namespace VWOSdk
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-         string GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
+         dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
 
          /// <summary>
         /// Makes a call to our server to store the tag_values

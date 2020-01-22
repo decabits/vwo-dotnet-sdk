@@ -56,7 +56,7 @@ namespace VWOSdk
         public string Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options["custom_variables"];
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if (this._validator.Activate(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -104,7 +104,7 @@ namespace VWOSdk
         public string GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options["custom_variables"];
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if (this._validator.GetVariation(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -160,8 +160,8 @@ namespace VWOSdk
         public bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue = null, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var revenueValues = options["revenue_values"];
-            var customVariables = options["custom_variables"];
+            var revenueValues = options.ContainsKey("revenue_value") ? options["revenue_value"] : null;
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -273,7 +273,7 @@ namespace VWOSdk
         public bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options["custom_variables"];
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if (this._validator.GetVariation(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -333,10 +333,10 @@ namespace VWOSdk
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        public dynamic GetFeatureVariableValue(string campaignTestKey,string variableKey, string userId, Dictionary<string, dynamic> options = null)
+        public dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options["custom_variables"];
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             var variables = new List<Dictionary<string, dynamic>>();
             var variable = new Dictionary<string, dynamic>();
 
