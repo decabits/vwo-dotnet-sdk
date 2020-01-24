@@ -108,7 +108,7 @@ namespace VWOSdk
             if (this._validator.GetVariation(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
-                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(GetVariation));
                     return null;
                 }
@@ -239,7 +239,7 @@ namespace VWOSdk
             if (this._validator.GetVariation(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
-                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(IsFeatureEnabled));
                     return false;
                 }
@@ -305,12 +305,12 @@ namespace VWOSdk
             if (this._validator.GetFeatureVariableValue(campaignTestKey, variableKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
-                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(GetFeatureVariableValue));
                     return null;
                 }
 
-                if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
+                if (campaign == null || campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                     return null;
                 }  
