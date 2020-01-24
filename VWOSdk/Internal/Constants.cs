@@ -59,8 +59,8 @@ namespace VWOSdk
 
         public static class PushApi
         {
-            internal static readonly string TAG_KEY_LENGTH = "TAG_KEY_LENGTH";
-            internal static readonly string TAG_VALUE_LENGTH = "TAG_VALUE_LENGTH";
+            internal static readonly int TAG_KEY_LENGTH = 255;
+            internal static readonly int TAG_VALUE_LENGTH = 255;
         }
 
         public static class OperatorTypes

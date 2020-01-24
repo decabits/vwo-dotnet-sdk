@@ -150,17 +150,16 @@ namespace VWOSdk
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
-        /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// A boolean value based on whether the impression was made to the VWO server.
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue = null, Dictionary<string, dynamic> options = null)
+        public bool Track(string campaignTestKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var revenueValues = options.ContainsKey("revenue_value") ? options["revenue_value"] : null;
+            var revenueValue = options.ContainsKey("revenue_value") ? options["revenue_value"].ToString() : null;
             var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue, options))
             {
@@ -221,43 +220,6 @@ namespace VWOSdk
             }
             return false;
         }
-
-        /// <summary>
-        /// Tracks a conversion event for a particular user for a running server-side campaign.
-        /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
-        /// <param name="userId">User ID which uniquely identifies each user.</param>
-        /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
-        /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
-        /// <param name="options">Dictionary for passing extra parameters to activate</param>
-        /// <returns>
-        /// A boolean value based on whether the impression was made to the VWO server.
-        /// True, if an impression event is successfully being made to the VWO server for report generation.
-        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
-        /// </returns>
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, int revenueValue, Dictionary<string, dynamic> options = null)
-        {
-            return this.Track(campaignTestKey, userId, goalIdentifier, revenueValue.ToString(), options);
-        }
-
-        /// <summary>
-        /// Tracks a conversion event for a particular user for a running server-side campaign.
-        /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
-        /// <param name="userId">User ID which uniquely identifies each user.</param>
-        /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
-        /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
-        /// <param name="options">Dictionary for passing extra parameters to activate</param>
-        /// <returns>
-        /// A boolean value based on whether the impression was made to the VWO server.
-        /// True, if an impression event is successfully being made to the VWO server for report generation.
-        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
-        /// </returns>
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, float revenueValue, Dictionary<string, dynamic> options = null)
-        {
-            return this.Track(campaignTestKey, userId, goalIdentifier, revenueValue.ToString(), options );
-        }
-
 
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
@@ -413,15 +375,15 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public bool Push(dynamic tagKey, dynamic tagValue, string userId)
+        public bool Push(string tagKey, dynamic tagValue, string userId)
         {
             if (this._validator.Push(tagKey, tagValue, userId)) {
-                if(tagKey.Length > (Constants.PushApi.TAG_KEY_LENGTH)) {
+                if((int)tagKey.Length > (Constants.PushApi.TAG_KEY_LENGTH)) {
                     LogErrorMessage.TagKeyLengthExceeded(typeof(IVWOClient).FullName, userId, tagKey, nameof(Push));
                     return false;
                 }
 
-                if(tagValue.Length > (Constants.PushApi.TAG_VALUE_LENGTH)) {
+                if((int)tagValue.Length > (Constants.PushApi.TAG_VALUE_LENGTH)) {
                     LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, userId, tagKey, nameof(Push));
                     return false;
                 }

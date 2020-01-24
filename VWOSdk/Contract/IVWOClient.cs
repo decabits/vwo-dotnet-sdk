@@ -50,45 +50,13 @@ namespace VWOSdk
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
-        /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// A boolean value based on whether the impression was made to the VWO server.
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue = null, Dictionary<string, dynamic> options = null);
-
-        /// <summary>
-        /// Tracks a conversion event for a particular user for a running server-side campaign.
-        /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
-        /// <param name="userId">User ID which uniquely identifies each user.</param>
-        /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
-        /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
-        /// <param name="options">Dictionary for passing extra parameters to activate</param>
-        /// <returns>
-        /// A boolean value based on whether the impression was made to the VWO server.
-        /// True, if an impression event is successfully being made to the VWO server for report generation.
-        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
-        /// </returns>
-        bool Track(string campaignTestKey, string userId, string goalIdentifier, int revenueValue, Dictionary<string, dynamic> options = null);
-
-        /// <summary>
-        /// Tracks a conversion event for a particular user for a running server-side campaign.
-        /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
-        /// <param name="userId">User ID which uniquely identifies each user.</param>
-        /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
-        /// <param name="revenueValue">The Revenue to be tracked for a revenue-type goal.</param>
-        /// <param name="options">Dictionary for passing extra parameters to activate</param>
-        /// <returns>
-        /// A boolean value based on whether the impression was made to the VWO server.
-        /// True, if an impression event is successfully being made to the VWO server for report generation.
-        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
-        /// </returns>
-        bool Track(string campaignTestKey, string userId, string goalIdentifier, float revenueValue, Dictionary<string, dynamic> options = null);
-
+        bool Track(string campaignTestKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
         /// </summary>
@@ -125,6 +93,6 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-         bool Push(dynamic tagKey, dynamic tagValue, string userId);
+         bool Push(string tagKey, dynamic tagValue, string userId);
     }
 }
