@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using Xunit;
+using System.Collections.Generic;
 
 namespace VWOSdk.Tests
 {
@@ -50,7 +51,7 @@ namespace VWOSdk.Tests
         [InlineData("654654", "21", true)]
         public void Validate_GetVariation_With_InValid_AccountId_And_SdkKey(string campaignTestKey, string userId, bool expectedResult)
         {
-            var result = new Validator().GetVariation(campaignTestKey, userId);
+            var result = new Validator().GetVariation(campaignTestKey, userId, new Dictionary<string, dynamic>());
             Assert.Equal(expectedResult, result);
         }
 
@@ -66,7 +67,7 @@ namespace VWOSdk.Tests
         [InlineData("654654", "21", true)]
         public void Validate_Activate_With_InValid_AccountId_And_SdkKey(string campaignTestKey, string userId, bool expectedResult)
         {
-            var result = new Validator().Activate(campaignTestKey, userId);
+            var result = new Validator().Activate(campaignTestKey, userId, new Dictionary<string, dynamic>());
             Assert.Equal(expectedResult, result);
         }
 
@@ -317,7 +318,7 @@ namespace VWOSdk.Tests
         [InlineData("Campaign1122", "User1122", "Goal1122", "1.3213", true)]
         public void Validate_Track_With_InValid_AccountId_And_SdkKey(string campaignTestKey, string userId, string goalIdentifier, string revenueValue, bool expectedResult)
         {
-            var result = new Validator().Track(campaignTestKey, userId, goalIdentifier, revenueValue);
+            var result = new Validator().Track(campaignTestKey, userId, goalIdentifier, revenueValue,  new Dictionary<string, dynamic>());
             Assert.Equal(expectedResult, result);
         }
     }
