@@ -26,7 +26,9 @@ namespace VWOSdk.Tests
     {
         private readonly string MockCampaignTestKey = "MockCampaignTestKey";
         private readonly string MockUserId = "MockUserId";
-        private readonly string MockRevenueValue = "0.321";
+        private readonly Dictionary<string, dynamic> MockTrackCustomVariables = new Dictionary<string, dynamic>() {
+            {"revenue_value", 0.321}
+        };
         private readonly string MockGoalIdentifier = "MockGoalIdentifier";
         private readonly string MockVariationName = "VariationName";
         private readonly string MockSdkKey = "MockSdkKey";
@@ -52,8 +54,8 @@ namespace VWOSdk.Tests
             var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
 
-            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), null), Times.Once);
         }
 
         [Fact]
@@ -63,16 +65,17 @@ namespace VWOSdk.Tests
             Mock.SetupTrack(mockValidator, false);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator);
-            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockRevenueValue);
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
             Assert.False(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => MockRevenueValue.Equals(val))
+                It.Is<string>(val => MockTrackCustomVariables.Equals(val)),
+                null
             ), Times.Once);
         }
 
@@ -87,8 +90,8 @@ namespace VWOSdk.Tests
             var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
 
-            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), null), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), It.IsAny<string>()), Times.Once);
@@ -123,16 +126,17 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockCampaignResolver, null);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver);
-            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockRevenueValue);
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
             Assert.False(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => MockRevenueValue.Equals(val))
+                It.Is<string>(val => MockTrackCustomVariables.Equals(val)),
+                null
             ), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -155,8 +159,8 @@ namespace VWOSdk.Tests
             var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
 
-            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), null), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), It.IsAny<string>()), Times.Once);
@@ -203,16 +207,17 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockVariationResolver, null);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockRevenueValue);
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
             Assert.False(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => MockRevenueValue.Equals(val))
+                It.Is<string>(val => MockTrackCustomVariables.Equals(val)),
+                null
             ), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -240,8 +245,8 @@ namespace VWOSdk.Tests
             Assert.NotNull(result);
             Assert.Equal(MockVariationName, result);
 
-            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
+            mockValidator.Verify(mock => mock.GetVariation(It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), null), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.Is<string>(val => MockCampaignTestKey.Equals(val)), It.Is<string>(val => MockUserId.Equals(val)), It.IsAny<string>()), Times.Once);
@@ -288,16 +293,17 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockRevenueValue);
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
             Assert.True(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => MockRevenueValue.Equals(val))
+                It.Is<string>(val => MockTrackCustomVariables.Equals(val)),
+                null
             ), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -323,13 +329,14 @@ namespace VWOSdk.Tests
             var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier);
             Assert.False(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => val == null)
+                It.Is<string>(val => val == null),
+                null
             ), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -351,18 +358,20 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            int revenueValue = -1;
+            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>(){{"revenue_value",-1}};
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, revenueValue);
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, revenueDict);
             Assert.True(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            string revenueValue = revenueDict["revenue_value"];
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => val == revenueValue.ToString())
+                It.Is<string>(val => val == revenueValue.ToString()),
+                null
             ), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -384,18 +393,20 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            float revenueValue = -1;
+            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>() {{"revenue_value", -1}};
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, revenueValue);
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, revenueDict);
             Assert.True(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            string revenueValue = revenueDict["revenue_value"].ToString();
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => val == revenueValue.ToString())
+                It.Is<string>(val => val == revenueValue),
+                null
             ), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -418,16 +429,17 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockRevenueValue);
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
             Assert.False(result);
 
-            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
                 It.Is<string>(val => MockCampaignTestKey.Equals(val)),
                 It.Is<string>(val => MockUserId.Equals(val)),
                 It.Is<string>(val => MockGoalIdentifier.Equals(val)),
-                It.Is<string>(val => MockRevenueValue.Equals(val))
+                It.Is<string>(val => MockTrackCustomVariables.Equals(val)),
+                null
             ), Times.Once);
 
             mockCampaignResolver.Verify(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -510,7 +522,7 @@ namespace VWOSdk.Tests
         private Variation GetVariation(string variationName = null)
         {
             variationName = variationName ?? MockVariationName;
-            return new Variation(-2, variationName, null, 100);
+            return new Variation(-2, variationName, null, 100, false);
         }
     }
 }

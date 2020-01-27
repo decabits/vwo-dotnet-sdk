@@ -24,13 +24,14 @@ namespace VWOSdk
     public class Variation
     {
         [JsonConstructor]
-        internal Variation(int id, string name, Changes changes, double weight, bool IsFeatureEnabled, List<Dictionary<string, dynamic>> Variables)
+        internal Variation(int id, string name, Changes changes, double weight, bool IsFeatureEnabled, List<Dictionary<string, dynamic>> Variables = null)
         {
             this.Id = id;
             this.Name = name;
             this.Changes = changes;
             this.Weight = weight;
             this.IsFeatureEnabled = IsFeatureEnabled;
+            if (this.Variables == null) this.Variables = new List<Dictionary<string, dynamic>>();
             this.Variables = Variables;
         }
 

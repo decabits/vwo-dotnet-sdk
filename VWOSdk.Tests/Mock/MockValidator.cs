@@ -47,13 +47,13 @@ namespace VWOSdk.Tests
 
         internal static void SetupGetVariation(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>()))
+            mockValidator.Setup(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), null))
                 .Returns(returnValue);
         }
 
         internal static void SetupTrack(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            mockValidator.Setup(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null))
                 .Returns(returnValue);
         }
 

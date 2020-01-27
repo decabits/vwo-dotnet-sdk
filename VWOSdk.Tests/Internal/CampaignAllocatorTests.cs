@@ -131,7 +131,7 @@ namespace VWOSdk.Tests
         private RangeBucket<Variation> GetVariations(string variationName)
         {
             var result = new RangeBucket<Variation>(10000);
-            result.Add(100, new Variation(1, variationName, null, 100));
+            result.Add(100, new Variation(1, variationName, null, 100, false));
             return result;
         }
 
