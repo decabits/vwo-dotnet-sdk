@@ -107,9 +107,10 @@ namespace VWOSdk.Tests
             return MockCampaignAllocator.Get();
         }
 
-        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign returnValue)
+        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign allocatedCampaign, BucketedCampaign getCampaign = null)
         {
-            MockCampaignAllocator.SetupResolve(mockCampaignResolver, returnValue);
+            if (getCampaign == null) getCampaign = allocatedCampaign;
+            MockCampaignAllocator.SetupResolve(mockCampaignResolver, allocatedCampaign, getCampaign);
         }
 
         internal static Mock<IVariationAllocator> GetVariationResolver()

@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using Moq;
+using System.Collections.Generic;
 
 namespace VWOSdk.Tests
 {
@@ -41,19 +42,19 @@ namespace VWOSdk.Tests
 
         internal static void SetupActivate(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>(), null))
+            mockValidator.Setup(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
                 .Returns(returnValue);
         }
 
         internal static void SetupGetVariation(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), null))
+            mockValidator.Setup(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
                 .Returns(returnValue);
         }
 
         internal static void SetupTrack(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), null))
+            mockValidator.Setup(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
                 .Returns(returnValue);
         }
 

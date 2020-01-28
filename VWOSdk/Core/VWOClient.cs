@@ -60,7 +60,7 @@ namespace VWOSdk
             if (this._validator.Activate(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
-                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(Activate));
                     return null;
                 }
@@ -113,7 +113,6 @@ namespace VWOSdk
                     return null;
                 }
 
-                
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetVariation));
                     return null;
@@ -130,7 +129,6 @@ namespace VWOSdk
                 } else {
                     LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
                 }
-
             
                 var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(GetVariation));
                 if (assignedVariation.Variation != null)
@@ -164,7 +162,7 @@ namespace VWOSdk
             if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
-                if (campaign.Status != Constants.CampaignStatus.RUNNING) {
+                if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(Track));
                     return false;
                 }
@@ -403,6 +401,7 @@ namespace VWOSdk
         /// </summary>
         /// <param name="campaignTestKey"></param>
         /// <param name="userId"></param>
+        /// <param name="apiName"></param>
         /// <returns>
         /// If Variation is allocated, returns UserAssignedInfo with valid details, else return Empty UserAssignedInfo.
         /// </returns>

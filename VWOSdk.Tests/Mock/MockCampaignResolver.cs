@@ -27,10 +27,13 @@ namespace VWOSdk.Tests
             return new Mock<ICampaignAllocator>();
         }
 
-        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign returnValue)
+        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign allocateCampaignReturnValue, BucketedCampaign getCampaignReturnValue = null)
         {
             mockCampaignResolver.Setup(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(returnValue);
+                .Returns(allocateCampaignReturnValue);
+
+            mockCampaignResolver.Setup(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()))
+                .Returns(getCampaignReturnValue);
         }
     }
 }
