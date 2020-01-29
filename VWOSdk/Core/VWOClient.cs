@@ -64,14 +64,12 @@ namespace VWOSdk
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(Activate));
                     return null;
                 }
-
                 if (campaign.Type != Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(Activate));
                     return null;
                 }
-
                 if (campaign.Segments.Count > 0) {
-                    if (!customVariables) {
+                    if (customVariables == null) {
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Activate));
                         customVariables = new Dictionary<string, dynamic>();
                     }
@@ -119,7 +117,7 @@ namespace VWOSdk
                 }
 
                 if (campaign.Segments.Count > 0) {
-                    if (!customVariables) {
+                    if (customVariables == null) {
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
                         customVariables = new Dictionary<string, dynamic>();
                     }
@@ -173,7 +171,7 @@ namespace VWOSdk
                 }
 
                 if (campaign.Segments.Count > 0) {
-                    if (!customVariables) {
+                    if (customVariables == null) {
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Track));
                         customVariables = new Dictionary<string, dynamic>();
                     }
