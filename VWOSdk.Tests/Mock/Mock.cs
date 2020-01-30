@@ -92,6 +92,16 @@ namespace VWOSdk.Tests
             MockValidator.SetupTrack(mockValidator, returnValue);
         }
 
+        internal static void SetupIsFeatureEnabled(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            MockValidator.SetupIsFeatureEnabled(mockValidator, returnValue);
+        }
+
+        internal static void SetupGetFeatureVariableValue(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            MockValidator.SetupGetFeatureVariableValue(mockValidator, returnValue);
+        }
+
         internal static Mock<ISettingsProcessor> GetSettingsProcessor()
         {
             return MockSettingsProcessor.Get();

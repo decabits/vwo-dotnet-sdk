@@ -232,7 +232,7 @@ namespace VWOSdk
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
-            if (this._validator.GetVariation(campaignTestKey, userId, options))
+            if (this._validator.IsFeatureEnabled(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
@@ -277,8 +277,12 @@ namespace VWOSdk
                     }
                     
                 }
-            }
             return true;
+            }
+            else 
+            {
+                return false;
+            }
         }
 
         /// <summary>
