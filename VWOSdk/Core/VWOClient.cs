@@ -275,7 +275,7 @@ namespace VWOSdk
                         }
                     return result;
                     }
-                    
+   
                 }
             return true;
             }
