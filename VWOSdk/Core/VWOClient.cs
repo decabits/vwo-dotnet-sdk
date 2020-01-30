@@ -310,7 +310,7 @@ namespace VWOSdk
                     return null;
                 }
 
-                if (campaign == null || campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
+                if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                     return null;
                 }  
