@@ -32,6 +32,7 @@ namespace VWOSdk.Tests
             SetupTrack(mockValidator, returnValue: true);
             SetupIsFeatureEnabled(mockValidator, returnValue: true);
             SetupGetFeatureVariableValue(mockValidator, returnValue: true);
+            SetupPush(mockValidator, returnValue: true);
             SetupSettingsFile(mockValidator, returnValue: true);
             return mockValidator;
         }
@@ -69,6 +70,12 @@ namespace VWOSdk.Tests
         internal static void SetupGetFeatureVariableValue(Mock<IValidator> mockValidator, bool returnValue)
         {
             mockValidator.Setup(mock => mock.GetFeatureVariableValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
+                .Returns(returnValue);
+        }
+
+        internal static void SetupPush(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            mockValidator.Setup(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(returnValue);
         }
 

@@ -277,7 +277,7 @@ namespace VWOSdk
                 }
    
                 }
-            return true;
+                return true;
             }
             else 
             {
@@ -387,9 +387,10 @@ namespace VWOSdk
                     LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, userId, tagKey, nameof(Push));
                     return false;
                 }
+                ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
+                return true;
             }
-            ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
-            return true;
+            return false;
         }
 
 
