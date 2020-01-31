@@ -179,7 +179,7 @@ namespace VWOSdk
                         return false;
                     }
                 } else {
-                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Track));
                 }
 
 
@@ -274,7 +274,7 @@ namespace VWOSdk
                            LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
                         }
                     return result;
-                    }
+                }
    
                 }
             return true;
@@ -317,7 +317,7 @@ namespace VWOSdk
 
                 if (campaign.Segments.Count > 0)
                 {
-                    if (!customVariables)
+                    if (customVariables== null)
                     {
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                         customVariables = new Dictionary<string, dynamic>();
@@ -350,7 +350,7 @@ namespace VWOSdk
                 }
 
                 variable = this.GetVariable(variables, variableKey);
-                if (variable.Count == 0)
+                if (variable == null || variable.Count == 0)
                 {
                    LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, campaign.Type, userId, variableKey, campaignTestKey, nameof(GetFeatureVariableValue));
                    return null; 
