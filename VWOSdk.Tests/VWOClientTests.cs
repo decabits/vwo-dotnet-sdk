@@ -79,10 +79,162 @@ namespace VWOSdk.Tests
             }
         };
 
-        private readonly Dictionary<string, dynamic> MockCustomVaribles = new Dictionary<string, dynamic>()
+        private readonly Dictionary<string, dynamic> MockSegmentStartsWith = new Dictionary<string, dynamic>()
         {
-            {"hello", "world"},
-            {"a", "012345"}
+            {
+                "and", new List<Dictionary<string, dynamic>>()
+                {
+                    new Dictionary<string, dynamic>()
+                    {
+                        {
+                            "or",  new List<Dictionary<string, dynamic>>()
+                            {
+                                new Dictionary<string, dynamic>()
+                                {
+                                    {
+                                        "custom_variable", new Dictionary<string, dynamic>()
+                                        {
+                                            {"a", "wildcard(1234*)"}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        private readonly Dictionary<string, dynamic> MockSegmentEndsWith = new Dictionary<string, dynamic>()
+        {
+            {
+                "and", new List<Dictionary<string, dynamic>>()
+                {
+                    new Dictionary<string, dynamic>()
+                    {
+                        {
+                            "or",  new List<Dictionary<string, dynamic>>()
+                            {
+                                new Dictionary<string, dynamic>()
+                                {
+                                    {
+                                        "custom_variable", new Dictionary<string, dynamic>()
+                                        {
+                                            {"a", "wildcard(*123)"}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        private readonly Dictionary<string, dynamic> MockSegmentLower = new Dictionary<string, dynamic>()
+        {
+            {
+                "and", new List<Dictionary<string, dynamic>>()
+                {
+                    new Dictionary<string, dynamic>()
+                    {
+                        {
+                            "or",  new List<Dictionary<string, dynamic>>()
+                            {
+                                new Dictionary<string, dynamic>()
+                                {
+                                    {
+                                        "custom_variable", new Dictionary<string, dynamic>()
+                                        {
+                                            {"hello", "lower(WORLD)"}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        private readonly Dictionary<string, dynamic> MockSegmentEquals = new Dictionary<string, dynamic>()
+        {
+            {
+                "and", new List<Dictionary<string, dynamic>>()
+                {
+                    new Dictionary<string, dynamic>()
+                    {
+                        {
+                            "or",  new List<Dictionary<string, dynamic>>()
+                            {
+                                new Dictionary<string, dynamic>()
+                                {
+                                    {
+                                        "custom_variable", new Dictionary<string, dynamic>()
+                                        {
+                                            {"hello", "equals(world)"}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        private readonly Dictionary<string, dynamic> MockOptions = new Dictionary<string, dynamic>()
+        {
+            {
+                "custom_variables", new Dictionary<string, dynamic>()
+                    {
+                        {"hello", "world"},
+                        {"a", "012345"}
+                    }
+            }
+        };
+        private readonly Dictionary<string, dynamic> MockOptionsStartWith = new Dictionary<string, dynamic>()
+        {
+            {
+                "custom_variables", new Dictionary<string, dynamic>()
+                    {
+                        {"hello", "world"},
+                        {"a", "12345"}
+                    }
+            }
+        };
+
+        private readonly Dictionary<string, dynamic> MockOptionsEquals = new Dictionary<string, dynamic>()
+        {
+            {
+                "custom_variables", new Dictionary<string, dynamic>()
+                    {
+                        {"hello", "world"},
+                        {"a", "12345"}
+                    }
+            }
+        };
+
+        private readonly Dictionary<string, dynamic> MockOptionsEndWith = new Dictionary<string, dynamic>()
+        {
+            {
+                "custom_variables", new Dictionary<string, dynamic>()
+                    {
+                        {"hello", "world"},
+                        {"a", "91123"}
+                    }
+            }
+        };
+
+        private readonly Dictionary<string, dynamic> MockOptionsLower = new Dictionary<string, dynamic>()
+        {
+            {
+                "custom_variables", new Dictionary<string, dynamic>()
+                    {
+                        {"hello", "world"},
+                        {"a", "91123"}
+                    }
+            }
         };
 
         [Fact]
@@ -1094,6 +1246,114 @@ namespace VWOSdk.Tests
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_Contains()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Activate(MockCampaignTestKey, MockUserId, MockOptions);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_StartsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentStartsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Activate(MockCampaignTestKey, MockUserId, MockOptionsStartWith);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_EndsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEndsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Activate(MockCampaignTestKey, MockUserId, MockOptionsEndWith);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_Lower()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentLower);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Activate(MockCampaignTestKey, MockUserId, MockOptionsLower);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEquals);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Activate(MockCampaignTestKey, MockUserId, MockOptionsEquals);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
 
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);

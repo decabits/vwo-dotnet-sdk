@@ -26,8 +26,8 @@ namespace VWOSdk
 {
     internal class OperandEvaluator
     {
-        private static string GROUPING_PATTERN = @"/^(.+?)\((.*)\)/";
-        private static string WILDCARD_PATTERN = @"/(^\*|^)(.+?)(\*$|$)/";
+        private static string GROUPING_PATTERN = @"^(.+?)\((.*)\)";
+        private static string WILDCARD_PATTERN = @"(^\*|^)(.+?)(\*$|$)";
 
         internal OperandEvaluator() {}
         public bool evaluateOperand(Dictionary<string, dynamic> operandData, Dictionary<string, dynamic> customVariables) {
@@ -35,10 +35,8 @@ namespace VWOSdk
             string operand = operandData[operandKey];
             // Retrieve corresponding custom_variable value from custom_variables
             var customVariablesValue = customVariables.ContainsKey(operandKey) ? customVariables[operandKey] : null;
-
             // Pre process custom_variable value
             customVariablesValue = this.processCustomVariablesValue(customVariablesValue);
-
             // Pre process operand value
             var procecessedOperands = this.processOperandValue(operand);
             var operandType = procecessedOperands[0];
@@ -48,7 +46,6 @@ namespace VWOSdk
             string[] trueTypesData = this.convertToTrueTypes(operandValue, customVariablesValue);
             operandValue = trueTypesData[0];
             customVariablesValue = trueTypesData[1];
-
             switch (operandType) {
                 case Constants.OperandValueTypes.CONTAINS:
                     return this.contains(operandValue, customVariablesValue);
@@ -68,7 +65,7 @@ namespace VWOSdk
 
         private string processCustomVariablesValue(dynamic customVariableValue) {
             if (customVariableValue == null || customVariableValue.ToString().Length == 0) return "";
-            if (customVariableValue == true || customVariableValue == false) {
+            if (customVariableValue.GetType() == typeof(bool)) {
                 customVariableValue = customVariableValue ? Constants.OperandValueBooleanTypes.TRUE : Constants.OperandValueBooleanTypes.FALSE;
             }
             return customVariableValue.ToString();
@@ -81,9 +78,8 @@ namespace VWOSdk
             var operandType = typeof(Constants.OperandValueTypesName).GetField(operandTypeName.ToUpper(), BindingFlags.NonPublic | BindingFlags.Static).GetValue(null).ToString();
             string startingStar = "";
             string endingStar = "";
-
             if (operandTypeName == Constants.OperandValueTypesName.WILDCARD) {
-                Match match = Regex.Match(operand, OperandEvaluator.WILDCARD_PATTERN);
+                Match match = Regex.Match(operandValue, OperandEvaluator.WILDCARD_PATTERN);
                 if (match.Success) {
                     startingStar = match.Groups[1].Value;
                     operandValue = match.Groups[2].Value;
@@ -92,9 +88,9 @@ namespace VWOSdk
                 if (startingStar.Length > 0 && endingStar.Length > 0) {
                     operandType = Constants.OperandValueTypes.CONTAINS;
                 } else if (startingStar.Length > 0) {
-                    operandType = Constants.OperandValueTypes.STARTS_WITH;
-                } else if (endingStar.Length > 0) {
                     operandType = Constants.OperandValueTypes.ENDS_WITH;
+                } else if (endingStar.Length > 0) {
+                    operandType = Constants.OperandValueTypes.STARTS_WITH;
                 } else {
                     operandType = Constants.OperandValueTypes.EQUALS;
                 }

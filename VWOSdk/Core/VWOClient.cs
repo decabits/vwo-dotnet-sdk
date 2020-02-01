@@ -56,7 +56,7 @@ namespace VWOSdk
         public string Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary<string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if (this._validator.Activate(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -102,7 +102,7 @@ namespace VWOSdk
         public string GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if (this._validator.GetVariation(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -156,7 +156,7 @@ namespace VWOSdk
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             var revenueValue = options.ContainsKey("revenue_value") ? options["revenue_value"].ToString() : null;
-            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -231,7 +231,7 @@ namespace VWOSdk
         public bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if (this._validator.IsFeatureEnabled(campaignTestKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
@@ -246,7 +246,7 @@ namespace VWOSdk
                 }
 
                 if (campaign.Segments.Count > 0) {
-                    if (!customVariables) {
+                    if (customVariables.Count == 0) {
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
                         customVariables = new Dictionary<string, dynamic>();
                     }
@@ -298,7 +298,7 @@ namespace VWOSdk
         public dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             var variables = new List<Dictionary<string, dynamic>>();
             var variable = new Dictionary<string, dynamic>();
 
