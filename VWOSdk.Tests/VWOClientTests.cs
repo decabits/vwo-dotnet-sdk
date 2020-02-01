@@ -1359,6 +1359,156 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
         }
 
+        [Fact]
+        public void GetVariation_Should_Return_Null_When_PreSegmentation_Fails()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId);
+            Assert.Null(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Track_Should_Return_False_When_PreSegmentation_Fails()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier);
+            Assert.False(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void IsFeatureEnabled_Should_Return_False_When_PreSegmentation_Fails()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.IsFeatureEnabled(MockCampaignTestKey, MockUserId);
+            Assert.False(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+         [Fact]
+        public void GetFeatureVariableValue_Should_Return_Null_When_PreSegmentation_Fails()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignTestKey, MockVariableKey, MockUserId);
+            Assert.Null(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Push_Should_Return_False_When_Tag_Key_Length_Exceeds()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var MockTagKey = "eafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfv";
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator);
+            var result = vwoClient.Push(MockTagKey , MockTagValue,  MockUserId);
+            Assert.False(result);
+
+            mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Push(It.Is<string>(val => MockTagKey.Equals(val)), It.Is<string>(val => MockTagValue.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+  
+        }
+
+        [Fact]
+        public void Push_Should_Return_True_When_Tag_Key_Length_Does_Not_Exceeds()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var MockTagKey = "wauggsiafoh";
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator);
+            var result = vwoClient.Push(MockTagKey, MockTagValue,  MockUserId);
+            Assert.True(result);
+
+            mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Push(It.Is<string>(val => MockTagKey.Equals(val)), It.Is<string>(val => MockTagValue.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Push_Should_Return_False_When_Tag_Value_Length_Exceeds()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var MockTagValue = "eafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfveafhsjfdrhfkvgfxkgbxfbkrekmkfdgdlkgvekrdkdfv";
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator);
+            var result = vwoClient.Push(MockTagKey, MockTagValue,  MockUserId);
+            Assert.False(result);
+
+            mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Push(It.Is<string>(val => MockTagKey.Equals(val)), It.Is<string>(val => MockTagValue.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+        }
+
+        
+        [Fact]
+        public void Push_Should_Return_True_When_Tag_Value_Length_Does_Not_Exceeds()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var MockTagKey = "wauggsiafoh";
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator);
+            var result = vwoClient.Push(MockTagKey, MockTagValue,  MockUserId);
+            Assert.True(result);
+
+            mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockValidator.Verify(mock => mock.Push(It.Is<string>(val => MockTagKey.Equals(val)), It.Is<string>(val => MockTagValue.Equals(val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+        }
+
         private bool VerifyTrackUserVerb(ApiRequest apiRequest)
         {
             if(apiRequest != null)
