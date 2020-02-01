@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace VWOSdk
@@ -33,7 +34,7 @@ namespace VWOSdk
             var operandKey = operandData.Keys.First();
             string operand = operandData[operandKey];
             // Retrieve corresponding custom_variable value from custom_variables
-            var customVariablesValue = customVariables[operandKey];
+            var customVariablesValue = customVariables.ContainsKey(operandKey) ? customVariables[operandKey] : null;
 
             // Pre process custom_variable value
             customVariablesValue = this.processCustomVariablesValue(customVariablesValue);
@@ -46,7 +47,7 @@ namespace VWOSdk
             // Process the customVariablesValue and operandValue to make them of same type
             string[] trueTypesData = this.convertToTrueTypes(operandValue, customVariablesValue);
             operandValue = trueTypesData[0];
-            customVariablesValue = customVariablesValue[0];
+            customVariablesValue = trueTypesData[1];
 
             switch (operandType) {
                 case Constants.OperandValueTypes.CONTAINS:
@@ -77,7 +78,7 @@ namespace VWOSdk
             var seperatedOperand = this.seperateOperand(operand);
             var operandTypeName = seperatedOperand[0];
             var operandValue = seperatedOperand[1];
-            var operandType = typeof(Constants.OperandValueTypesName).GetField(operandTypeName.ToUpper()).GetValue(null).ToString();
+            var operandType = typeof(Constants.OperandValueTypesName).GetField(operandTypeName.ToUpper(), BindingFlags.NonPublic | BindingFlags.Static).GetValue(null).ToString();
             string startingStar = "";
             string endingStar = "";
 

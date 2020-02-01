@@ -79,6 +79,12 @@ namespace VWOSdk.Tests
             }
         };
 
+        private readonly Dictionary<string, dynamic> MockCustomVaribles = new Dictionary<string, dynamic>()
+        {
+            {"hello", "world"},
+            {"a", "012345"}
+        };
+
         [Fact]
         public void Activate_Should_Return_Null_When_Validation_Fails()
         {
@@ -968,7 +974,7 @@ namespace VWOSdk.Tests
             var mockSegmentEvaluator = Mock.GetSegmentEvaluator();
             Mock.SetupResolve(mockSegmentEvaluator, false);
 
-            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockSegmentEvaluator: mockSegmentEvaluator);
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: mockSegmentEvaluator.Object);
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
 
@@ -992,7 +998,7 @@ namespace VWOSdk.Tests
             var mockSegmentEvaluator = Mock.GetSegmentEvaluator();
             Mock.SetupResolve(mockSegmentEvaluator, false);
 
-            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockSegmentEvaluator: mockSegmentEvaluator);
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: mockSegmentEvaluator.Object);
             var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
 
@@ -1016,7 +1022,7 @@ namespace VWOSdk.Tests
             var mockSegmentEvaluator = Mock.GetSegmentEvaluator();
             Mock.SetupResolve(mockSegmentEvaluator, false);
 
-            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockSegmentEvaluator: mockSegmentEvaluator);
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: mockSegmentEvaluator.Object);
             var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier);
             Assert.False(result);
 
@@ -1040,7 +1046,7 @@ namespace VWOSdk.Tests
             var mockSegmentEvaluator = Mock.GetSegmentEvaluator();
             Mock.SetupResolve(mockSegmentEvaluator, false);
 
-            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockSegmentEvaluator: mockSegmentEvaluator);
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: mockSegmentEvaluator.Object);
             var result = vwoClient.IsFeatureEnabled(MockCampaignTestKey, MockUserId);
             Assert.False(result);
 
@@ -1064,7 +1070,7 @@ namespace VWOSdk.Tests
             var mockSegmentEvaluator = Mock.GetSegmentEvaluator();
             Mock.SetupResolve(mockSegmentEvaluator, false);
 
-            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockSegmentEvaluator: mockSegmentEvaluator);
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: mockSegmentEvaluator.Object);
             var result = vwoClient.GetFeatureVariableValue(MockCampaignTestKey, MockVariableKey, MockUserId);
             Assert.Null(result);
 
@@ -1072,7 +1078,26 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
         }
 
-        
+        [Fact]
+        public void Activate_Should_Return_Null_When_PreSegmentation_Fails()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
+            Assert.Null(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
 
         private bool VerifyTrackUserVerb(ApiRequest apiRequest)
         {
@@ -1087,7 +1112,7 @@ namespace VWOSdk.Tests
             return false;
         }
 
-        private IVWOClient GetVwoClient(Mock<IValidator> mockValidator = null, Mock<ICampaignAllocator> mockCampaignResolver = null, Mock<IVariationAllocator> mockVariationResolver = null, Mock<ISegmentEvaluator> mockSegmentEvaluator = null)
+        private IVWOClient GetVwoClient(Mock<IValidator> mockValidator = null, Mock<ICampaignAllocator> mockCampaignResolver = null, Mock<IVariationAllocator> mockVariationResolver = null, ISegmentEvaluator segmentEvaluator = null)
         {
             mockValidator = mockValidator ?? Mock.GetValidator();
             if (mockCampaignResolver == null)
@@ -1102,12 +1127,13 @@ namespace VWOSdk.Tests
                 Mock.SetupResolve(mockVariationResolver, GetVariation());
             }
 
-            if (mockSegmentEvaluator == null) {
-                mockSegmentEvaluator = Mock.GetSegmentEvaluator();
+            if (segmentEvaluator == null) {
+                var mockSegmentEvaluator = Mock.GetSegmentEvaluator();
                 Mock.SetupResolve(mockSegmentEvaluator, true);
+                segmentEvaluator = mockSegmentEvaluator.Object;
             }
 
-            return new VWO(GetSettings(), mockValidator.Object, null, mockCampaignResolver.Object,  mockSegmentEvaluator.Object, mockVariationResolver.Object, true);
+            return new VWO(GetSettings(), mockValidator.Object, null, mockCampaignResolver.Object,  segmentEvaluator, mockVariationResolver.Object, true);
         }
 
         private AccountSettings GetSettings()
