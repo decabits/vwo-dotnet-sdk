@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace VWOSdk
 {
@@ -43,19 +44,19 @@ namespace VWOSdk
                 }
                 if (variableType == Constants.VARIABLE_TYPES.STRING)
                 {
-                    return value.toString();
+                    return Convert.ToString(value);
                 }
                 if (variableType == Constants.VARIABLE_TYPES.INTEGER)
                 {
-                    return (int)value;
+                    return Convert.ToInt32(value);
                 }
                 if (variableType== Constants.VARIABLE_TYPES.DOUBLE)
                 {
-                    return (double)value;
+                    return Convert.ToDouble(value);
                 }
                 if (variableType == Constants.VARIABLE_TYPES.BOOLEAN)
                 {
-                    if (value != null) return (bool)value;
+                    return Convert.ToBoolean(value);
                 }
                 return value;
             } catch {

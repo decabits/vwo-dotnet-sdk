@@ -127,7 +127,7 @@ namespace VWOSdk
                 } else {
                     LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
                 }
-            
+
                 var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(GetVariation));
                 if (assignedVariation.Variation != null)
                 {
@@ -239,7 +239,7 @@ namespace VWOSdk
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(IsFeatureEnabled));
                     return false;
                 }
-            
+
                 if (campaign.Type == Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(IsFeatureEnabled));
                     return false;
@@ -267,7 +267,7 @@ namespace VWOSdk
 
                         if(result)
                         {
-                           LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled)); 
+                           LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
                         }
                         else
                         {
@@ -275,11 +275,11 @@ namespace VWOSdk
                         }
                     return result;
                 }
-   
+
                 }
                 return true;
             }
-            else 
+            else
             {
                 return false;
             }
@@ -313,7 +313,7 @@ namespace VWOSdk
                 if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                     return null;
-                }  
+                }
 
                 if (campaign.Segments.Count > 0)
                 {
@@ -321,11 +321,11 @@ namespace VWOSdk
                     {
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                         customVariables = new Dictionary<string, dynamic>();
-                    } 
+                    }
                     if (!this._segmentEvaluator.evaluate(campaignTestKey, userId, campaign.Segments, customVariables)) {
                         return null;
                     }
-                } else 
+                } else
                 {
                     LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                 }
@@ -339,28 +339,29 @@ namespace VWOSdk
                 {
                     if (!assignedVariation.Variation.IsFeatureEnabled)
                     {
-                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                         assignedVariation = this.GetControlVariation(campaign, campaign.Variations.Find(1, (new VariationAllocator()).GetVariationId));
                     }
                     else
                     {
-                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
-                        variables = assignedVariation.Variation.Variables;
+                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
                     }
+                    variables = assignedVariation.Variation.Variables;
                 }
 
                 variable = this.GetVariable(variables, variableKey);
                 if (variable == null || variable.Count == 0)
                 {
                    LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, campaign.Type, userId, variableKey, campaignTestKey, nameof(GetFeatureVariableValue));
-                   return null; 
+                   return null;
                 }
                 else
                 {
                     LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, campaign.Type, userId, variableKey,campaignTestKey, nameof(GetFeatureVariableValue));
                 }
+                return this._segmentEvaluator.getTypeCastedFeatureValue(variable["value"], variable["type"]);
             }
-            return this._segmentEvaluator.getTypeCastedFeatureValue(variable["value"], variable["type"]);
+            return null;
         }
 
 
@@ -430,11 +431,13 @@ namespace VWOSdk
         }
 
         private UserAllocationInfo GetControlVariation(BucketedCampaign campaign, Variation variation) {
-            return new UserAllocationInfo();
+            return new UserAllocationInfo(variation, campaign);
         }
 
         private Dictionary<string, dynamic> GetVariable(List<Dictionary<string, dynamic>> Variables, string VariableKey) {
-            return Variables.Find(variable => variable.Keys.First() == VariableKey);
+            Dictionary<string, dynamic> matchingVariable = Variables.Find(variable => variable.Keys.First() == VariableKey);
+            if (matchingVariable == null) return null;
+            return matchingVariable[VariableKey];
         }
 
         /// <summary>
@@ -456,8 +459,9 @@ namespace VWOSdk
                 else
                     LogErrorMessage.TrackApiGoalNotFound(file, goalIdentifier, campaignTestKey, userId);
             }
-            else
+            else {
                 LogErrorMessage.TrackApiVariationNotFound(file, campaignTestKey, userId);
+            }
             return userAllocationInfo;
         }
 

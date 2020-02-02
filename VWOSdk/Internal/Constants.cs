@@ -102,10 +102,10 @@ namespace VWOSdk
         public static class DOTNET_VARIABLE_TYPES
         {
             internal static Dictionary<string, string> VALUES = new Dictionary<string, string>() {
-                {"string", "string"},
-                {"integer", "int"},
-                {"double", "double"},
-                {"boolean", "bool"}
+                {"string", "String"},
+                {"integer", "Int"},
+                {"double", "Double"},
+                {"boolean", "Bool"}
             };
         }
 
