@@ -79,6 +79,11 @@ namespace VWOSdk
             if (byteContent != null)
             {
                 var json = Encoding.UTF8.GetString(byteContent);
+                if (typeof(T) == typeof(Settings)) {
+                    json = json.Replace("\"goals\":{}", "\"goals\":[]");
+                    json = json.Replace("\"campaigns\":{}", "\"campaigns\":[]");
+                    json = json.Replace("\"variables\":{}", "\"variables\":[]");
+                }
                 return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
             }
             return default(T);
