@@ -16,6 +16,7 @@
  */
 #pragma warning restore 1587
 
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -31,7 +32,8 @@ namespace VWOSdk
         internal SegmentEvaluator() {
             this.operandEvaluator = new OperandEvaluator();
         }
-        public bool evaluate(string campaignTestKey, string userId, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables) {
+
+        public bool evaluate(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables) {
             var result = this.evaluateSegment(segments, customVariables);
             return result;
         }
@@ -70,20 +72,22 @@ namespace VWOSdk
                 return true;
             }
             var segmentOperator = segments.Keys.First();
-            var subSegments = segments[segmentOperator];
+            var subSegments = ToDictionary(segments[segmentOperator]);
             switch(segmentOperator) {
                 case Constants.OperatorTypes.NOT:
                     return !this.evaluateSegment(subSegments, customVariables);
                 case Constants.OperatorTypes.AND:
                     foreach(var subSegment in subSegments) {
-                        if (!this.evaluateSegment(subSegment, customVariables)) {
+                        var segment = ToDictionary(subSegment);
+                        if (!this.evaluateSegment(segment, customVariables)) {
                             return false;
                         }
                     }
                     return true;
                 case Constants.OperatorTypes.OR:
                     foreach(var subSegment in subSegments) {
-                        if (this.evaluateSegment(subSegment, customVariables)) {
+                        var segment = ToDictionary(subSegment);
+                        if (this.evaluateSegment(segment, customVariables)) {
                             return true;
                         }
                     }
@@ -93,6 +97,13 @@ namespace VWOSdk
                 default:
                     return true;
             }
+        }
+
+        private static dynamic ToDictionary(dynamic input) {
+            if (input.GetType() == typeof(JObject)) {
+                return JObject.FromObject(input).ToObject<Dictionary<string, dynamic>>();
+            }
+            return input;
         }
     }
 }

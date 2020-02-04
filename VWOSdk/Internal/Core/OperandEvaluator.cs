@@ -26,7 +26,7 @@ namespace VWOSdk
 {
     internal class OperandEvaluator
     {
-        private static string GROUPING_PATTERN = @"^(.+?)\((.*)\)";
+        private static string GROUPING_PATTERN = @"^(.+?)\((.*)\)$";
         private static string WILDCARD_PATTERN = @"(^\*|^)(.+?)(\*$|$)";
 
         internal OperandEvaluator() {}
@@ -75,6 +75,10 @@ namespace VWOSdk
             var seperatedOperand = this.seperateOperand(operand);
             var operandTypeName = seperatedOperand[0];
             var operandValue = seperatedOperand[1];
+            if (operandTypeName == null || operandValue == null)
+            {
+                return new string[] { Constants.OperandValueTypes.EQUALS, operand };
+            }
             var operandType = typeof(Constants.OperandValueTypesName).GetField(operandTypeName.ToUpper(), BindingFlags.NonPublic | BindingFlags.Static).GetValue(null).ToString();
             string startingStar = "";
             string endingStar = "";
@@ -115,11 +119,11 @@ namespace VWOSdk
 
         private string[] convertToTrueTypes(dynamic operatorValue, dynamic customVariableValue) {
             try {
-                var trueTypeOperatorValue = float.Parse(operatorValue, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-                var trueTypeCustomVariablesValue = float.Parse(customVariableValue, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
-                if (trueTypeOperatorValue == Math.Floor(trueTypeOperatorValue)) trueTypeOperatorValue = Int16.Parse(trueTypeOperatorValue);
-                if (trueTypeOperatorValue == Math.Floor(trueTypeCustomVariablesValue)) trueTypeCustomVariablesValue = Int16.Parse(trueTypeCustomVariablesValue);
-                return new string[] { trueTypeOperatorValue, trueTypeOperatorValue };
+                var trueTypeOperatorValue = Convert.ToDouble(Convert.ToString(operatorValue));
+                var trueTypeCustomVariablesValue = Convert.ToDouble(Convert.ToString(customVariableValue));
+                if (trueTypeOperatorValue == Math.Floor(trueTypeOperatorValue)) trueTypeOperatorValue = Convert.ToInt32(trueTypeOperatorValue);
+                if (trueTypeOperatorValue == Math.Floor(trueTypeCustomVariablesValue)) trueTypeCustomVariablesValue = Convert.ToInt32(trueTypeCustomVariablesValue);
+                return new string[] { Convert.ToString(trueTypeOperatorValue), Convert.ToString(trueTypeCustomVariablesValue) };
             } catch {
                 return new string[] { operatorValue, customVariableValue };
             }
@@ -138,8 +142,12 @@ namespace VWOSdk
             return customVariablesValue.ToLower() == operandValue.ToLower();
         }
         private bool regex(string operandValue, string customVariablesValue) {
-            Match match = Regex.Match(customVariablesValue, operandValue);
-            return match.Success;
+            try {
+                Match match = Regex.Match(customVariablesValue, operandValue);
+                return match.Success;
+            } catch {
+                return false;
+            }
         }
         private bool equals(string operandValue, string customVariablesValue) {
             return customVariablesValue == operandValue;

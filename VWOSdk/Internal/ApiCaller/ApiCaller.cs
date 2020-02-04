@@ -34,6 +34,11 @@ namespace VWOSdk
             return AsyncHelper.RunSync<T>(() => ExecuteAsync<T>(apiRequest));
         }
 
+         public T GetJsonContent<T>()
+        {
+            return default(T);
+        }
+
         public async Task<byte[]> ExecuteAsync(ApiRequest apiRequest)
         {
             if (apiRequest == null)

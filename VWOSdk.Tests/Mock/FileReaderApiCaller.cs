@@ -18,6 +18,7 @@
 
 using System.IO;
 using System.Reflection;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace VWOSdk.Tests
@@ -38,7 +39,15 @@ namespace VWOSdk.Tests
 
         public T Execute<T>(ApiRequest apiRequest)
         {
-            if(typeof(T) == typeof(Settings))
+            if(typeof(T) == typeof(Settings) || typeof(T) == typeof(Dictionary<string, dynamic>))
+            {
+                return GetSettingsFile<T>(this._settingsFileName);
+            }
+            return default(T);
+        }
+        public T GetJsonContent<T>()
+        {
+            if(typeof(T) == typeof(Settings) || typeof(T) == typeof(Dictionary<string, dynamic>))
             {
                 return GetSettingsFile<T>(this._settingsFileName);
             }
