@@ -244,6 +244,9 @@ namespace VWOSdk.Tests
                         {"hello", "world"},
                         {"a", "012345"}
                     }
+            },
+            {
+                "revenue_value", 10.1
             }
         };
         private readonly Dictionary<string, dynamic> MockOptionsStartWith = new Dictionary<string, dynamic>()
@@ -254,6 +257,9 @@ namespace VWOSdk.Tests
                         {"hello", "world"},
                         {"a", "12345"}
                     }
+            },
+            {
+                "revenue_value", 10.1
             }
         };
 
@@ -265,6 +271,9 @@ namespace VWOSdk.Tests
                         {"hello", "world"},
                         {"a", "12345"}
                     }
+            },
+            {
+                "revenue_value", 10.1
             }
         };
 
@@ -276,6 +285,9 @@ namespace VWOSdk.Tests
                         {"hello", "world"},
                         {"a", "91123"}
                     }
+            },
+            {
+                "revenue_value", 10.1
             }
         };
 
@@ -287,6 +299,9 @@ namespace VWOSdk.Tests
                         {"hello", "world"},
                         {"a", "91123"}
                     }
+            },
+            {
+                "revenue_value", 10.1
             }
         };
 
@@ -1463,6 +1478,92 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
+        public void GetVariation_Should_Return_Variation_When_PreSegmentation_Passes_With_Contains()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId, MockOptions);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+         [Fact]
+        public void Track_Should_Return_True_When_PreSegmentation_Passes_With_Contains()
+        {
+
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockOptions);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void IsFeatureEnabled_Should_Return_True_When_PreSegmentation_Passes_With_Contains()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment, campaignType: Constants.CampaignTypes.FEATURE_ROLLOUT);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.IsFeatureEnabled(MockCampaignTestKey, MockUserId, MockOptions);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void GetFeatureVariableValue_Should_Return_Null_When_PreSegmentation_Passes_With_Contains()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegment);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignTestKey, MockVariableKey, MockUserId, MockOptions);
+            Assert.Null(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
         public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_StartsWith()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1479,6 +1580,91 @@ namespace VWOSdk.Tests
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId, MockOptionsStartWith);
             Assert.NotNull(result);
             Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void GetVariation_Should_Return_Variation_When_PreSegmentation_Passes_With_StartsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentStartsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId, MockOptionsStartWith);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Track_Should_Return_Variation_When_PreSegmentation_Passes_With_StartsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentStartsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockOptionsStartWith);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void IsFeatureEnabled_Should_Return_Variation_When_PreSegmentation_Passes_With_StartsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentStartsWith, campaignType: Constants.CampaignTypes.FEATURE_ROLLOUT);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.IsFeatureEnabled(MockCampaignTestKey, MockUserId, MockOptionsStartWith);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void GetFeatureVariableValue_Should_Return_Null_When_PreSegmentation_Passes_With_StartsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentStartsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignTestKey, MockVariableKey, MockUserId, MockOptionsStartWith);
+            Assert.Null(result);
 
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
@@ -1506,6 +1692,93 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
         }
 
+        [Fact]
+        public void GetVariation_Should_Return_Variation_When_PreSegmentation_Passes_With_EndsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEndsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId, MockOptionsEndWith);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Track_Should_Return_Variation_When_PreSegmentation_Passes_With_EndsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEndsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockOptionsEndWith);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void IsFeatureEnabled_Should_Return_Variation_When_PreSegmentation_Passes_With_EndsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEndsWith, campaignType: Constants.CampaignTypes.FEATURE_ROLLOUT);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.IsFeatureEnabled(MockCampaignTestKey, MockUserId, MockOptionsEndWith);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void GetFeatureVariableValue_Should_Return_Variation_When_PreSegmentation_Passes_With_EndsWith()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEndsWith);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignTestKey, MockVariableKey, MockUserId, MockOptionsEndWith);
+            Assert.Null(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+
+        [Fact]
         public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_Lower()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1527,6 +1800,92 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
         }
 
+        [Fact]
+        public void GetVariation_Should_Return_Variation_When_PreSegmentation_Passes_With_Lower()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentLower);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId, MockOptionsLower);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void Track_Should_Return_Variation_When_PreSegmentation_Passes_With_Lower()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentLower);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockOptionsLower);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void IsFeatureEnabled_Should_Return_Variation_When_PreSegmentation_Passes_With_Lower()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentLower, campaignType: Constants.CampaignTypes.FEATURE_ROLLOUT);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.IsFeatureEnabled(MockCampaignTestKey, MockUserId, MockOptionsLower);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
+        public void GetFeatureVariableValue_Should_Return_Variation_When_PreSegmentation_Passes_With_Lower()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentLower);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignTestKey, MockVariableKey, MockUserId, MockOptionsLower);
+            Assert.Null(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+        [Fact]
         public void Activate_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1543,6 +1902,91 @@ namespace VWOSdk.Tests
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId, MockOptionsEquals);
             Assert.NotNull(result);
             Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+         [Fact]
+        public void GetVariation_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEquals);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetVariation(MockCampaignTestKey, MockUserId, MockOptionsEquals);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+         [Fact]
+        public void Track_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEquals);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.Track(MockCampaignTestKey, MockUserId, MockGoalIdentifier, MockOptionsEquals);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+         [Fact]
+        public void IsFeatureEnabled_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEquals, campaignType: Constants.CampaignTypes.FEATURE_ROLLOUT);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.IsFeatureEnabled(MockCampaignTestKey, MockUserId, MockOptionsEquals);
+            Assert.True(result);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
+        }
+
+         [Fact]
+        public void GetFeatureVariableValue_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(segments: MockSegmentEquals);
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignTestKey, MockVariableKey, MockUserId, MockOptionsEquals);
+            Assert.Null(result);
 
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
