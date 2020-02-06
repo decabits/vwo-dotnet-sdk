@@ -7381,7 +7381,7 @@
         "test_special_character_pound": {
             "dsl": {
                 "or": [{
-                    "custom_variables": {
+                    "custom_variable": {
                         "eq": "€"
                     }
                 }]
