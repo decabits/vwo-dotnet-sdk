@@ -40,52 +40,36 @@ namespace VWOSdk.Tests
         private readonly List<Dictionary<string, dynamic>> MockVariables = new List<Dictionary<string, dynamic>>() {
             new Dictionary<string, dynamic>()
             {
-                {
-                    "MockVariableKey", new Dictionary<string, dynamic>()
-                    {
-                        {"value", "test"},
-                        {"type", "string"}
-                    }
-                }
+                {"value", "test"},
+                {"type", "string"},
+                {"key", "MockVariableKey"}
             }
         };
 
         private readonly List<Dictionary<string, dynamic>> MockVariablesInt = new List<Dictionary<string, dynamic>>() {
             new Dictionary<string, dynamic>()
             {
-                {
-                    "MockVariableKey", new Dictionary<string, dynamic>()
-                    {
-                        {"value", "1"},
-                        {"type", "integer"}
-                    }
-                }
+                {"value", "1"},
+                {"type", "integer"},
+                {"key", "MockVariableKey"}
             }
         };
 
         private readonly List<Dictionary<string, dynamic>> MockVariablesBool = new List<Dictionary<string, dynamic>>() {
             new Dictionary<string, dynamic>()
             {
-                {
-                    "MockVariableKey", new Dictionary<string, dynamic>()
-                    {
-                        {"value", "true"},
-                        {"type", "boolean"}
-                    }
-                }
+                {"value", "true"},
+                {"type", "boolean"},
+                {"key", "MockVariableKey"}
             }
         };
 
         private readonly List<Dictionary<string, dynamic>> MockVariablesDouble = new List<Dictionary<string, dynamic>>() {
             new Dictionary<string, dynamic>()
             {
-                {
-                    "MockVariableKey", new Dictionary<string, dynamic>()
-                    {
-                        {"value", "1.1"},
-                        {"type", "double"}
-                    }
-                }
+                {"value", "1.1"},
+                {"type", "double"},
+                {"key", "MockVariableKey"}
             }
         };
 

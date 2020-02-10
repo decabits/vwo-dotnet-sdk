@@ -352,7 +352,7 @@ namespace VWOSdk
                 variable = this.GetVariable(variables, variableKey);
                 if (variable == null || variable.Count == 0)
                 {
-                   LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, campaign.Type, userId, variableKey, campaignTestKey, nameof(GetFeatureVariableValue));
+                   LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, variableKey, nameof(GetFeatureVariableValue));
                    return null;
                 }
                 else
@@ -435,9 +435,8 @@ namespace VWOSdk
         }
 
         private Dictionary<string, dynamic> GetVariable(List<Dictionary<string, dynamic>> Variables, string VariableKey) {
-            Dictionary<string, dynamic> matchingVariable = Variables.Find(variable => variable.Keys.First() == VariableKey);
-            if (matchingVariable == null) return null;
-            return matchingVariable[VariableKey];
+            Dictionary<string, dynamic> matchingVariable = Variables.Find(variable => variable.ContainsKey("key") && variable["key"] == VariableKey);
+            return matchingVariable;
         }
 
         /// <summary>
