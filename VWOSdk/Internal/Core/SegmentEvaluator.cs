@@ -93,7 +93,7 @@ namespace VWOSdk
                     }
                     return false;
                 case Constants.OperandTypes.CUSTOM_VARIABLE:
-                    return this.operandEvaluator.evaluateOperand(subSegments, customVariables);
+                    return this.operandEvaluator.EvaluateOperand(subSegments, customVariables);
                 default:
                     return true;
             }

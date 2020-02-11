@@ -71,7 +71,7 @@ namespace VWOSdk
          bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
-        /// Returns the feature variable corresponding to the variable_key passed. It typecasts the value to the corresponding value type found in settings_file
+        /// Returns the feature variable corresponding to the variableKey passed. It typecasts the value to the corresponding value type found in settings_file
         /// </summary>
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="variableKey">Campaign key to uniquely identify a server-side campaign.</param>
@@ -82,7 +82,7 @@ namespace VWOSdk
         /// </returns>
          dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
 
-         /// <summary>
+        /// <summary>
         /// Makes a call to our server to store the tag_values
         /// </summary>
         /// <param name="tagKey">key name of the tag</param>

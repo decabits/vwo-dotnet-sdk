@@ -85,6 +85,8 @@ namespace VWOSdk
             {
                 var json = Encoding.UTF8.GetString(byteContent);
                 if (typeof(T) == typeof(Settings)) {
+                    // As C# requires goals, campaigns and variables to be list
+                    // Replace empty structure of {} to []
                     json = json.Replace("\"goals\":{}", "\"goals\":[]");
                     json = json.Replace("\"campaigns\":{}", "\"campaigns\":[]");
                     json = json.Replace("\"variables\":{}", "\"variables\":[]");

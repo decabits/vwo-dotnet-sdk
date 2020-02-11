@@ -136,6 +136,7 @@ namespace VWOSdk
                 $"&{GetUnixTimeStamp()}" +
                 $"&{GetUuidQuery(userId, accountId)}" +
                 $"&{GetUserIdQuery(userId)}" +
+                $"&{GetEdQuery()}" +
                 $"&{GetSdkQuery()}";
         }
 

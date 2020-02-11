@@ -30,40 +30,40 @@ namespace VWOSdk
         private static string WILDCARD_PATTERN = @"(^\*|^)(.+?)(\*$|$)";
 
         internal OperandEvaluator() {}
-        public bool evaluateOperand(Dictionary<string, dynamic> operandData, Dictionary<string, dynamic> customVariables) {
+        public bool EvaluateOperand(Dictionary<string, dynamic> operandData, Dictionary<string, dynamic> customVariables) {
             var operandKey = operandData.Keys.First();
             string operand = operandData[operandKey];
             // Retrieve corresponding custom_variable value from custom_variables
             var customVariablesValue = customVariables.ContainsKey(operandKey) ? customVariables[operandKey] : null;
             // Pre process custom_variable value
-            customVariablesValue = this.processCustomVariablesValue(customVariablesValue);
+            customVariablesValue = this.ProcessCustomVariablesValue(customVariablesValue);
             // Pre process operand value
-            var procecessedOperands = this.processOperandValue(operand);
+            var procecessedOperands = this.ProcessOperandValue(operand);
             var operandType = procecessedOperands[0];
             var operandValue = procecessedOperands[1];
 
             // Process the customVariablesValue and operandValue to make them of same type
-            string[] trueTypesData = this.convertToTrueTypes(operandValue, customVariablesValue);
+            string[] trueTypesData = this.ConvertToTrueTypes(operandValue, customVariablesValue);
             operandValue = trueTypesData[0];
             customVariablesValue = trueTypesData[1];
             switch (operandType) {
                 case Constants.OperandValueTypes.CONTAINS:
-                    return this.contains(operandValue, customVariablesValue);
+                    return this.Contains(operandValue, customVariablesValue);
                 case Constants.OperandValueTypes.STARTS_WITH:
-                    return this.startsWith(operandValue, customVariablesValue);
+                    return this.StartsWith(operandValue, customVariablesValue);
                 case Constants.OperandValueTypes.ENDS_WITH:
-                    return this.endsWith(operandValue, customVariablesValue);
+                    return this.EndsWith(operandValue, customVariablesValue);
                 case Constants.OperandValueTypes.LOWER:
-                    return this.lower(operandValue, customVariablesValue);
+                    return this.Lower(operandValue, customVariablesValue);
                 case Constants.OperandValueTypes.REGEX:
-                    return this.regex(operandValue, customVariablesValue);
+                    return this.Regexp(operandValue, customVariablesValue);
                 default:
                     // Default is case of equals to
-                    return this.equals(operandValue, customVariablesValue);
+                    return this.Equals(operandValue, customVariablesValue);
             }
         }
 
-        private string processCustomVariablesValue(dynamic customVariableValue) {
+        private string ProcessCustomVariablesValue(dynamic customVariableValue) {
             if (customVariableValue == null || customVariableValue.ToString().Length == 0) return "";
             if (customVariableValue.GetType() == typeof(bool)) {
                 customVariableValue = customVariableValue ? Constants.OperandValueBooleanTypes.TRUE : Constants.OperandValueBooleanTypes.FALSE;
@@ -71,8 +71,8 @@ namespace VWOSdk
             return customVariableValue.ToString();
         }
 
-        private string[] processOperandValue(string operand) {
-            var seperatedOperand = this.seperateOperand(operand);
+        private string[] ProcessOperandValue(string operand) {
+            var seperatedOperand = this.SeperateOperand(operand);
             var operandTypeName = seperatedOperand[0];
             var operandValue = seperatedOperand[1];
             if (operandTypeName == null || operandValue == null)
@@ -109,7 +109,7 @@ namespace VWOSdk
             }
         }
 
-        private string[] seperateOperand(string operand) {
+        private string[] SeperateOperand(string operand) {
             Match match = Regex.Match(operand, OperandEvaluator.GROUPING_PATTERN);
             if (match.Success) {
                 return new string[] { match.Groups[1].Value, match.Groups[2].Value };
@@ -117,7 +117,7 @@ namespace VWOSdk
             return new string[] { Constants.OperandValueTypesName.EQUALS, operand };
         }
 
-        private string[] convertToTrueTypes(dynamic operatorValue, dynamic customVariableValue) {
+        private string[] ConvertToTrueTypes(dynamic operatorValue, dynamic customVariableValue) {
             try {
                 var trueTypeOperatorValue = Convert.ToDouble(Convert.ToString(operatorValue));
                 var trueTypeCustomVariablesValue = Convert.ToDouble(Convert.ToString(customVariableValue));
@@ -129,19 +129,19 @@ namespace VWOSdk
             }
         }
 
-        private bool contains(string operandValue, string customVariablesValue) {
+        private bool Contains(string operandValue, string customVariablesValue) {
             return customVariablesValue.Contains(operandValue);
         }
-        private bool startsWith(string operandValue, string customVariablesValue) {
+        private bool StartsWith(string operandValue, string customVariablesValue) {
             return customVariablesValue.StartsWith(operandValue);
         }
-        private bool endsWith(string operandValue, string customVariablesValue) {
+        private bool EndsWith(string operandValue, string customVariablesValue) {
             return customVariablesValue.EndsWith(operandValue);
         }
-        private bool lower(string operandValue, string customVariablesValue) {
+        private bool Lower(string operandValue, string customVariablesValue) {
             return customVariablesValue.ToLower() == operandValue.ToLower();
         }
-        private bool regex(string operandValue, string customVariablesValue) {
+        private bool Regexp(string operandValue, string customVariablesValue) {
             try {
                 Match match = Regex.Match(customVariablesValue, operandValue);
                 return match.Success;
@@ -149,7 +149,7 @@ namespace VWOSdk
                 return false;
             }
         }
-        private bool equals(string operandValue, string customVariablesValue) {
+        private bool Equals(string operandValue, string customVariablesValue) {
             return customVariablesValue == operandValue;
         }
     }
