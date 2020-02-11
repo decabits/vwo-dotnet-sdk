@@ -38,16 +38,16 @@ namespace VWOSdk
         /// </summary>
         private static readonly Guid IsoOidNamespace = new Guid("6ba7b812-9dad-11d1-80b4-00c04fd430c8");
         private static readonly string file = typeof(UuidV5Helper).FullName;
-        private const string GUID_FORMAT = "N";
-        private const string VWO_NAMESPACE_URL = "https://vwo.com";
+        private const string GuidFormat = "N";
+        private const string VWONamespaceUrl = "https://vwo.com";
 
         public static string Compute(long accountId, string userId)
         {
             var accountIdAsString = accountId.ToString();
-            var vwoNamespaceGuid = Identifiable.NamedGuid.Compute(NamedGuidAlgorithm.SHA1, UrlNamespace, VWO_NAMESPACE_URL);
+            var vwoNamespaceGuid = Identifiable.NamedGuid.Compute(NamedGuidAlgorithm.SHA1, UrlNamespace, VWONamespaceUrl);
             var accountIdGuid = NamedGuid.Compute(NamedGuidAlgorithm.SHA1, vwoNamespaceGuid, accountIdAsString);
             var userIdGuid = NamedGuid.Compute(NamedGuidAlgorithm.SHA1, accountIdGuid, userId);
-            var uuid = userIdGuid.ToString(GUID_FORMAT).ToUpper();
+            var uuid = userIdGuid.ToString(GuidFormat).ToUpper();
             LogDebugMessage.UuidForUser(file, userId, accountId, uuid);
             return uuid;
         }

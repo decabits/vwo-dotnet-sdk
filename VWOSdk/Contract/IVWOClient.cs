@@ -57,6 +57,7 @@ namespace VWOSdk
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
         bool Track(string campaignTestKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
+
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
         /// </summary>
@@ -68,7 +69,7 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-         bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
+        bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Returns the feature variable corresponding to the variableKey passed. It typecasts the value to the corresponding value type found in settings_file
@@ -80,7 +81,7 @@ namespace VWOSdk
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-         dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
+        dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Makes a call to our server to store the tag_values
@@ -93,6 +94,6 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-         bool Push(string tagKey, dynamic tagValue, string userId);
+        bool Push(string tagKey, dynamic tagValue, string userId);
     }
 }

@@ -26,8 +26,8 @@ namespace VWOSdk
 {
     internal class OperandEvaluator
     {
-        private static string GROUPING_PATTERN = @"^(.+?)\((.*)\)$";
-        private static string WILDCARD_PATTERN = @"(^\*|^)(.+?)(\*$|$)";
+        private static string GroupingPattern = @"^(.+?)\((.*)\)$";
+        private static string WildcardPattern = @"(^\*|^)(.+?)(\*$|$)";
 
         internal OperandEvaluator() {}
         public bool EvaluateOperand(Dictionary<string, dynamic> operandData, Dictionary<string, dynamic> customVariables) {
@@ -83,7 +83,7 @@ namespace VWOSdk
             string startingStar = "";
             string endingStar = "";
             if (operandTypeName == Constants.OperandValueTypesName.WILDCARD) {
-                Match match = Regex.Match(operandValue, OperandEvaluator.WILDCARD_PATTERN);
+                Match match = Regex.Match(operandValue, OperandEvaluator.WildcardPattern);
                 if (match.Success) {
                     startingStar = match.Groups[1].Value;
                     operandValue = match.Groups[2].Value;
@@ -110,7 +110,7 @@ namespace VWOSdk
         }
 
         private string[] SeperateOperand(string operand) {
-            Match match = Regex.Match(operand, OperandEvaluator.GROUPING_PATTERN);
+            Match match = Regex.Match(operand, OperandEvaluator.GroupingPattern);
             if (match.Success) {
                 return new string[] { match.Groups[1].Value, match.Groups[2].Value };
             }

@@ -42,7 +42,7 @@ namespace VWOSdk
             this._segmentEvaluator = segmentEvaluator;
         }
 
-        #region IVWOClient Methodss
+        #region IVWOClient Methods
 
         /// <summary>
         /// Activates a server-side A/B test for a specified user for a server-side running campaign.
@@ -91,13 +91,13 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// Activates a server-side A/B test for the specified user for a particular running campaign.
+        /// Gets the variation name assigned for the user for the campaign
         /// </summary>
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
-        /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
+        /// If variation is assigned then variation name, or Null in case of user not becoming part
         /// </returns>
         public string GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
         {
@@ -286,7 +286,7 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// Returns the feature variable corresponding to the variable_key passed. It typecasts the value to the corresponding value type found in settings_file
+        /// Returns the feature variable corresponding to the variableKey passed. It typecasts the value to the corresponding value type found in settings_file
         /// </summary>
         /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="variableKey">Campaign key to uniquely identify a server-side campaign.</param>
@@ -364,9 +364,8 @@ namespace VWOSdk
             return null;
         }
 
-
         /// <summary>
-        /// Makes a call to our server to store the tag_values
+        /// Makes a call to our server to store the tagValues
         /// </summary>
         /// <param name="tagKey">key name of the tag</param>
         /// <param name="tagValue">value of the tag</param>
@@ -393,7 +392,6 @@ namespace VWOSdk
             }
             return false;
         }
-
 
 
 

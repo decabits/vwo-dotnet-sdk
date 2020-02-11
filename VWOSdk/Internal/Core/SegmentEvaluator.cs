@@ -40,23 +40,23 @@ namespace VWOSdk
 
         public dynamic getTypeCastedFeatureValue(dynamic value, string variableType) {
             try {
-                if (value.GetType().Name == Constants.DOTNET_VARIABLE_TYPES.VALUES[variableType])
+                if (value.GetType().Name == Constants.DotnetVariableTypes.VALUES[variableType])
                 {
                     return value;
                 }
-                if (variableType == Constants.VARIABLE_TYPES.STRING)
+                if (variableType == Constants.VariableTypes.STRING)
                 {
                     return Convert.ToString(value);
                 }
-                if (variableType == Constants.VARIABLE_TYPES.INTEGER)
+                if (variableType == Constants.VariableTypes.INTEGER)
                 {
                     return Convert.ToInt32(value);
                 }
-                if (variableType== Constants.VARIABLE_TYPES.DOUBLE)
+                if (variableType== Constants.VariableTypes.DOUBLE)
                 {
                     return Convert.ToDouble(value);
                 }
-                if (variableType == Constants.VARIABLE_TYPES.BOOLEAN)
+                if (variableType == Constants.VariableTypes.BOOLEAN)
                 {
                     return Convert.ToBoolean(value);
                 }

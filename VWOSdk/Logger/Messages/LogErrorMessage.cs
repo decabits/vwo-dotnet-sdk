@@ -85,7 +85,7 @@ namespace VWOSdk
         }
         public static void UnableToTypeCast(string file, string value, string variableType, string ofType)
         {
-            Log.Error($"(%<file>s): Unable to typecast value: {value} of type: {ofType} to type: {variableType}.");
+            Log.Error($"({file}): Unable to typecast value: {value} of type: {ofType} to type: {variableType}.");
         }
         //public static void InvalidCampaign(string file, string method)
         //{

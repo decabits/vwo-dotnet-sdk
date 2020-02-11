@@ -96,19 +96,16 @@ namespace VWOSdk
         private bool Validate(IReadOnlyList<Campaign> campaigns)
         {
             var result = NotNull(campaigns) && NotEmpty(campaigns);
-
             foreach(var campaign in campaigns)
             {
                 result = result && Validate(campaign);
             }
-
             return result;
         }
 
         private bool Validate(Campaign campaign)
         {
             var result = NotNull(campaign);
-
             result = result && ValidateLong(campaign.Id);
             result = result && ValidateString(campaign.Key);
             result = result && ValidateDouble(campaign.PercentTraffic);
@@ -120,12 +117,10 @@ namespace VWOSdk
         private bool Validate(IReadOnlyList<Variation> variations)
         {
             var result = NotNull(variations) && NotEmpty(variations);
-
             foreach(var variation in variations)
             {
                 result = result && Validate(variation);
             }
-
             return result;
         }
 

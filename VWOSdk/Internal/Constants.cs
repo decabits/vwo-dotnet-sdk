@@ -99,7 +99,7 @@ namespace VWOSdk
             internal const string FALSE = "false";
         }
 
-        public static class DOTNET_VARIABLE_TYPES
+        public static class DotnetVariableTypes
         {
             internal static Dictionary<string, string> VALUES = new Dictionary<string, string>() {
                 {"string", "String"},
@@ -109,7 +109,7 @@ namespace VWOSdk
             };
         }
 
-        public static class VARIABLE_TYPES
+        public static class VariableTypes
         {
             internal const string STRING = "string";
             internal const string INTEGER = "integer";

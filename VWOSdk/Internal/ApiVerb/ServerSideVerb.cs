@@ -145,7 +145,8 @@ namespace VWOSdk
             return "ed={\"p\":\"server\"}";
         }
 
-        private static string GetUserTagQuery(string tagKey, string tagValue) {
+        private static string GetUserTagQuery(string tagKey, string tagValue)
+        {
             return $"u={{\"{tagKey}\":\"{tagValue}\"}}";
         }
 
