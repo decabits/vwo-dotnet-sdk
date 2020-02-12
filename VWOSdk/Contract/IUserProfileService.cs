@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ namespace VWOSdk
         /// Lookup previously allocated Campaign and Variation.
         /// </summary>
         /// <param name="userId">UserId for the user to fetch details.</param>
-        /// <param name="campaignTestKey">Campaign Key to look up.</param>
+        /// <param name="campaignKey">Campaign Key to look up.</param>
         /// <returns></returns>
-        UserProfileMap Lookup(string userId, string campaignTestKey);
+        UserProfileMap Lookup(string userId, string campaignKey);
 
         /// <summary>
         /// Save allocated Campaign and Variation.

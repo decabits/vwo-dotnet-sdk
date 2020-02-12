@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,39 +46,39 @@ namespace VWOSdk
         /// <summary>
         /// Activates a server-side A/B test for a specified user for a server-side running campaign.
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        public string Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
+        public string Activate(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary<string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
-            if (this._validator.Activate(campaignTestKey, userId, options))
+            if (this._validator.Activate(campaignKey, userId, options))
             {
-                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
-                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(Activate));
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignKey, nameof(Activate));
                     return null;
                 }
                 if (campaign.Type != Constants.CampaignTypes.VISUAL_AB) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(Activate));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(Activate));
                     return null;
                 }
                 if (campaign.Segments.Count > 0) {
                     if (customVariables == null) {
-                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Activate));
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Activate));
                         customVariables = new Dictionary<string, dynamic>();
                     }
                     if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
                         return null;
                     }
                 } else {
-                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Activate));
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Activate));
                 }
-                var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(Activate));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, apiName: nameof(Activate));
                 if (assignedVariation.Variation != null)
                 {
                     var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
@@ -92,42 +92,42 @@ namespace VWOSdk
         /// <summary>
         /// Gets the variation name assigned for the user for the campaign
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// If variation is assigned then variation name, or Null in case of user not becoming part
         /// </returns>
-        public string GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
+        public string GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
-            if (this._validator.GetVariation(campaignTestKey, userId, options))
+            if (this._validator.GetVariation(campaignKey, userId, options))
             {
-                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
-                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(GetVariation));
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignKey, nameof(GetVariation));
                     return null;
                 }
 
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(GetVariation));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(GetVariation));
                     return null;
                 }
 
                 if (campaign.Segments.Count > 0) {
                     if (customVariables == null) {
-                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(GetVariation));
                         customVariables = new Dictionary<string, dynamic>();
                     }
                     if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
                         return null;
                     }
                 } else {
-                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetVariation));
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, nameof(GetVariation));
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(GetVariation));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, apiName: nameof(GetVariation));
                 if (assignedVariation.Variation != null)
                 {
                     var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
@@ -142,7 +142,7 @@ namespace VWOSdk
         /// <summary>
         /// Tracks a conversion event for a particular user for a running server-side campaign.
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
@@ -151,37 +151,37 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
+        public bool Track(string campaignKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             string revenueValue = options.ContainsKey("revenue_value") ? options["revenue_value"].ToString() : null;
             Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
-            if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue, options))
+            if(this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
             {
-                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
-                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(Track));
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignKey, nameof(Track));
                     return false;
                 }
 
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(Track));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(Track));
                     return false;
                 }
 
                 if (campaign.Segments.Count > 0) {
                     if (customVariables == null) {
-                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Track));
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Track));
                         customVariables = new Dictionary<string, dynamic>();
                     }
                     if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
                         return false;
                     }
                 } else {
-                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Track));
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Track));
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignTestKey, userId, goalIdentifier: goalIdentifier, apiName: nameof(Track));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, goalIdentifier: goalIdentifier, apiName: nameof(Track));
                 var variationName = assignedVariation.Variation?.Name;
                 var selectedGoalIdentifier = assignedVariation.Goal?.Identifier;
                 if (string.IsNullOrEmpty(variationName) == false)
@@ -192,7 +192,7 @@ namespace VWOSdk
                         if (assignedVariation.Goal.IsRevenueType() && string.IsNullOrEmpty(revenueValue))
                         {
                             sendImpression = false;
-                            LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignTestKey, userId);
+                            LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
                         }
                         else if (assignedVariation.Goal.IsRevenueType() == false)
                         {
@@ -208,7 +208,7 @@ namespace VWOSdk
                     }
                     else
                     {
-                        LogErrorMessage.TrackApiGoalNotFound(file, goalIdentifier, campaignTestKey, userId);
+                        LogErrorMessage.TrackApiGoalNotFound(file, goalIdentifier, campaignKey, userId);
                     }
                 }
             }
@@ -218,7 +218,7 @@ namespace VWOSdk
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
@@ -226,35 +226,35 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null)
+        public bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
-            if (this._validator.IsFeatureEnabled(campaignTestKey, userId, options))
+            if (this._validator.IsFeatureEnabled(campaignKey, userId, options))
             {
-                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
-                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(IsFeatureEnabled));
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignKey, nameof(IsFeatureEnabled));
                     return false;
                 }
                 if (campaign.Type == Constants.CampaignTypes.VISUAL_AB) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(IsFeatureEnabled));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(IsFeatureEnabled));
                     return false;
                 }
 
                 if (campaign.Segments.Count > 0) {
                     if (customVariables.Count == 0) {
-                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(IsFeatureEnabled));
                         customVariables = new Dictionary<string, dynamic>();
                     }
                     if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
                         return false;
                     }
                 } else {
-                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, nameof(IsFeatureEnabled));
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(IsFeatureEnabled));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, apiName: nameof(IsFeatureEnabled));
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST) {
                     if (assignedVariation.Variation != null)
                     {
@@ -264,11 +264,11 @@ namespace VWOSdk
 
                         if(result)
                         {
-                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
+                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignKey, userId, nameof(IsFeatureEnabled));
                         }
                         else
                         {
-                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
+                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignKey, userId, nameof(IsFeatureEnabled));
                         }
                         return result;
                     }
@@ -285,30 +285,30 @@ namespace VWOSdk
         /// <summary>
         /// Returns the feature variable corresponding to the variableKey passed. It typecasts the value to the corresponding value type found in settings_file
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="variableKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        public dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
+        public dynamic GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             var variables = new List<Dictionary<string, dynamic>>();
             var variable = new Dictionary<string, dynamic>();
 
-            if (this._validator.GetFeatureVariableValue(campaignTestKey, variableKey, userId, options))
+            if (this._validator.GetFeatureVariableValue(campaignKey, variableKey, userId, options))
             {
-                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignTestKey);
+                var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING) {
-                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(GetFeatureVariableValue));
+                    LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignKey, nameof(GetFeatureVariableValue));
                     return null;
                 }
 
                 if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId,  campaignTestKey, campaign.Type, nameof(GetFeatureVariableValue));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId,  campaignKey, campaign.Type, nameof(GetFeatureVariableValue));
                     return null;
                 }
 
@@ -316,7 +316,7 @@ namespace VWOSdk
                 {
                     if (customVariables== null)
                     {
-                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(GetFeatureVariableValue));
                         customVariables = new Dictionary<string, dynamic>();
                     }
                     if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
@@ -324,10 +324,10 @@ namespace VWOSdk
                     }
                 } else
                 {
-                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, nameof(GetFeatureVariableValue));
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignTestKey, userId, apiName: nameof(GetFeatureVariableValue));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, apiName: nameof(GetFeatureVariableValue));
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT)
                 {
                    variables = campaign.Variables;
@@ -336,12 +336,12 @@ namespace VWOSdk
                 {
                     if (!assignedVariation.Variation.IsFeatureEnabled)
                     {
-                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(GetFeatureVariableValue));
+                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignKey, userId, nameof(GetFeatureVariableValue));
                         assignedVariation = this.GetControlVariation(campaign, campaign.Variations.Find(1, (new VariationAllocator()).GetVariationId));
                     }
                     else
                     {
-                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(GetFeatureVariableValue));
+                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignKey, userId, nameof(GetFeatureVariableValue));
                     }
                     variables = assignedVariation.Variation.Variables;
                 }
@@ -349,12 +349,12 @@ namespace VWOSdk
                 variable = this.GetVariable(variables, variableKey);
                 if (variable == null || variable.Count == 0)
                 {
-                   LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, variableKey, campaignTestKey, campaign.Type, userId, nameof(GetFeatureVariableValue));
+                   LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, variableKey, campaignKey, campaign.Type, userId, nameof(GetFeatureVariableValue));
                    return null;
                 }
                 else
                 {
-                    LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, variableKey, campaignTestKey, campaign.Type, variable["value"].ToString(), userId, nameof(GetFeatureVariableValue));
+                    LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, variableKey, campaignKey, campaign.Type, variable["value"].ToString(), userId, nameof(GetFeatureVariableValue));
                 }
                 return this._segmentEvaluator.getTypeCastedFeatureValue(variable["value"], variable["type"]);
             }
@@ -397,30 +397,30 @@ namespace VWOSdk
         /// <summary>
         /// Allocate variation by checking UserProfileService, Campaign Traffic Allocation and compute UserHash to check variation allocation by bucketing.
         /// </summary>
-        /// <param name="campaignTestKey"></param>
+        /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
         /// <param name="apiName"></param>
         /// <returns>
         /// If Variation is allocated, returns UserAssignedInfo with valid details, else return Empty UserAssignedInfo.
         /// </returns>
-        private UserAllocationInfo AllocateVariation(string campaignTestKey, string userId, string apiName = null)
+        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, string apiName = null)
         {
-            UserProfileMap userProfileMap = this._userProfileService.GetUserMap(campaignTestKey, userId);
-            BucketedCampaign selectedCampaign = this._campaignAllocator.Allocate(this._settings, userProfileMap, campaignTestKey, userId, apiName);
+            UserProfileMap userProfileMap = this._userProfileService.GetUserMap(campaignKey, userId);
+            BucketedCampaign selectedCampaign = this._campaignAllocator.Allocate(this._settings, userProfileMap, campaignKey, userId, apiName);
             if (selectedCampaign != null)
             {
                 Variation variation = this._variationAllocator.Allocate(userProfileMap, selectedCampaign, userId);
                 if (variation != null)
                 {
-                    LogInfoMessage.VariationAllocated(file, userId, campaignTestKey, variation.Name);
-                    LogDebugMessage.GotVariationForUser(file, userId, campaignTestKey, variation.Name, nameof(AllocateVariation));
+                    LogInfoMessage.VariationAllocated(file, userId, campaignKey, variation.Name);
+                    LogDebugMessage.GotVariationForUser(file, userId, campaignKey, variation.Name, nameof(AllocateVariation));
 
                     this._userProfileService.SaveUserMap(userId, selectedCampaign.Key, variation.Name);
                     return new UserAllocationInfo(variation, selectedCampaign);
                 }
             }
 
-            LogInfoMessage.NoVariationAllocated(file, userId, campaignTestKey);
+            LogInfoMessage.NoVariationAllocated(file, userId, campaignKey);
             return new UserAllocationInfo();
         }
 
@@ -436,24 +436,24 @@ namespace VWOSdk
         /// <summary>
         /// If variation is assigned, allocate the goal using goalIdentifier.
         /// </summary>
-        /// <param name="campaignTestKey"></param>
+        /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
         /// <param name="goalIdentifier"></param>
         /// <returns>
         /// If Variation is allocated and goal with given identifier is found, return UserAssignedInfo with valid information, otherwise, Empty UserAssignedInfo object.
         /// </returns>
-        private UserAllocationInfo AllocateVariation(string campaignTestKey, string userId, string goalIdentifier, string apiName)
+        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, string goalIdentifier, string apiName)
         {
-            var userAllocationInfo = this.AllocateVariation(campaignTestKey, userId, apiName);
+            var userAllocationInfo = this.AllocateVariation(campaignKey, userId, apiName);
             if (userAllocationInfo.Variation != null)
             {
                 if (userAllocationInfo.Campaign.Goals.TryGetValue(goalIdentifier, out Goal goal))
                     userAllocationInfo.Goal = goal;
                 else
-                    LogErrorMessage.TrackApiGoalNotFound(file, goalIdentifier, campaignTestKey, userId);
+                    LogErrorMessage.TrackApiGoalNotFound(file, goalIdentifier, campaignKey, userId);
             }
             else {
-                LogErrorMessage.TrackApiVariationNotFound(file, campaignTestKey, userId);
+                LogErrorMessage.TrackApiVariationNotFound(file, campaignKey, userId);
             }
             return userAllocationInfo;
         }

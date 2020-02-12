@@ -32,17 +32,17 @@ IVWOClient vwoClient = VWO.Instantiate(settingsFile);           //  Create VWO C
 
 ```c#
 // Activate API
-string variationName = vwoClient.Activate(campaignTestKey, userId);
+string variationName = vwoClient.Activate(campaignKey, userId);
 
 // GetVariation API
-string variationName = vwoClient.GetVariation(campaignTestKey, userId);
+string variationName = vwoClient.GetVariation(campaignKey, userId);
 
 // Track API
 // For CUSTOM CONVERSION Goal
-bool isSuccessful = vwoClient.Track(campaignTestKey, userId, goalIdentifier);
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier);
 
 // For Revenue Goal
-bool isSuccessful = vwoClient.Track(campaignTestKey, userId, goalIdentifier, revenueValue);
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, revenueValue);
 ```
 
 **Configure Log Level**

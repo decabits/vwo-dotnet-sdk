@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ namespace VWOSdk
         /// <summary>
         /// If UserProfileService is provided, Calls Lookup for given UserId and validate the result.
         /// </summary>
-        /// <param name="campaignTestKey"></param>
+        /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
         /// <returns>
         /// Returns userProfileMap if validation is success, else null.
         /// </returns>
-        internal UserProfileMap GetUserMap(string campaignTestKey, string userId)
+        internal UserProfileMap GetUserMap(string campaignKey, string userId)
         {
             if (this._userProfileService == null)
             {
@@ -46,18 +46,18 @@ namespace VWOSdk
                 return null;
             }
 
-            UserProfileMap userMap = TryGetUserMap(userId, campaignTestKey);
+            UserProfileMap userMap = TryGetUserMap(userId, campaignKey);
 
-            if (userMap == null || string.IsNullOrEmpty(userMap.CampaignTestKey)
+            if (userMap == null || string.IsNullOrEmpty(userMap.CampaignKey)
                 || string.IsNullOrEmpty(userMap.VariationName) || string.IsNullOrEmpty(userMap.UserId)
-                || string.Equals(userMap.UserId, userId) == false || string.Equals(userMap.CampaignTestKey, campaignTestKey) == false)
+                || string.Equals(userMap.UserId, userId) == false || string.Equals(userMap.CampaignKey, campaignKey) == false)
             {
-                LogDebugMessage.NoStoredVariation(file, userId, campaignTestKey);
+                LogDebugMessage.NoStoredVariation(file, userId, campaignKey);
                 return null;
             }
 
-            LogInfoMessage.GotStoredVariation(file, userMap.VariationName, campaignTestKey, userId);
-            LogDebugMessage.GettingStoredVariation(file, userId, campaignTestKey, userMap.VariationName);
+            LogInfoMessage.GotStoredVariation(file, userMap.VariationName, campaignKey, userId);
+            LogDebugMessage.GettingStoredVariation(file, userId, campaignKey, userMap.VariationName);
             return userMap;
         }
 
@@ -66,22 +66,22 @@ namespace VWOSdk
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private UserProfileMap TryGetUserMap(string userId, string campaignTestKey)
+        private UserProfileMap TryGetUserMap(string userId, string campaignKey)
         {
             try
             {
-                LogInfoMessage.LookingUpUserProfileService(file, userId, campaignTestKey);
-                return this._userProfileService.Lookup(userId, campaignTestKey);
+                LogInfoMessage.LookingUpUserProfileService(file, userId, campaignKey);
+                return this._userProfileService.Lookup(userId, campaignKey);
             }
             catch (Exception ex)
             {
-                LogErrorMessage.LookUpUserProfileServiceFailed(file, userId, campaignTestKey);
+                LogErrorMessage.LookUpUserProfileServiceFailed(file, userId, campaignKey);
             }
 
             return null;
         }
 
-        internal void SaveUserMap(string userId, string campaignTestKey, string variationName)
+        internal void SaveUserMap(string userId, string campaignKey, string variationName)
         {
             if (this._userProfileService == null)
             {
@@ -92,7 +92,7 @@ namespace VWOSdk
             try
             {
                 LogInfoMessage.SavingDataUserProfileService(file, userId);
-                this._userProfileService.Save(new UserProfileMap(userId, campaignTestKey, variationName));
+                this._userProfileService.Save(new UserProfileMap(userId, campaignKey, variationName));
                 return;
             }
             catch (Exception ex)

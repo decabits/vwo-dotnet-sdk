@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,29 +25,29 @@ namespace VWOSdk
         /// <summary>
         /// Activates a server-side A/B test for a specified user for a server-side running campaign.
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        string Activate(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
+        string Activate(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Activates a server-side A/B test for the specified user for a particular running campaign.
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        string GetVariation(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
+        string GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Tracks a conversion event for a particular user for a running server-side campaign.
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
@@ -56,12 +56,12 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        bool Track(string campaignTestKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
+        bool Track(string campaignKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
@@ -69,19 +69,19 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        bool IsFeatureEnabled(string campaignTestKey, string userId, Dictionary<string, dynamic> options = null);
+        bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Returns the feature variable corresponding to the variableKey passed. It typecasts the value to the corresponding value type found in settings_file
         /// </summary>
-        /// <param name="campaignTestKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="variableKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
         /// <returns>
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
-        dynamic GetFeatureVariableValue(string campaignTestKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
+        dynamic GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Makes a call to our server to store the tag_values
