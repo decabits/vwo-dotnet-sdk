@@ -357,7 +357,7 @@ namespace VWOSdk
                 }
                 else
                 {
-                    LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, variableKey, campaignTestKey, campaign.Type, variable["value"] , userId, nameof(GetFeatureVariableValue));
+                    LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, variableKey, campaignTestKey, campaign.Type, variable["value"].ToString(), userId, nameof(GetFeatureVariableValue));
                 }
                 return this._segmentEvaluator.getTypeCastedFeatureValue(variable["value"], variable["type"]);
             }
