@@ -267,17 +267,16 @@ namespace VWOSdk
 
                         if(result)
                         {
-                           LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
+                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
                         }
                         else
                         {
-                           LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
+                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
                         }
-                    return result;
+                        return result;
+                    }
+                    return true;
                 }
-
-                }
-                return true;
             }
             else
             {
