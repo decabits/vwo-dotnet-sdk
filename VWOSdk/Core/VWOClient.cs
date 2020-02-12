@@ -384,7 +384,8 @@ namespace VWOSdk
                     LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, tagKey,userId, nameof(Push));
                     return false;
                 }
-                ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
+                var pushRequest = ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
+                pushRequest.ExecuteAsync();
                 return true;
             }
             return false;

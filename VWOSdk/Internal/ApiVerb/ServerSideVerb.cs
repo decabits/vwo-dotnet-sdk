@@ -71,7 +71,7 @@ namespace VWOSdk
             string queryParams = GetQueryParamertersForPushTag(settings, tagKey, tagValue, userId);
             var trackPushRequest = new ApiRequest(Method.GET, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{Verb}/{TrackGoalVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{Verb}/{PushTagsVerb}?{queryParams}"),
             };
             trackPushRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForPushTag(file, queryParams);
