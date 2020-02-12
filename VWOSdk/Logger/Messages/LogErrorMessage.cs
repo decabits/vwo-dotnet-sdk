@@ -58,10 +58,10 @@ namespace VWOSdk
         //    Log.Error($"({file}): \"track\" API has corrupted configuration");
         //}
 
-        public static void InvalidApi(string file, string campaignType, string userId, string campaignTestKey, string apiName) {
+        public static void InvalidApi(string file, string userId, string campaignTestKey, string campaignType, string apiName) {
             Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} in campaign ID: {campaignTestKey} having campaign type: {campaignType}.");
         }
-        public static void VariableNotFound(string file, string campaignType, string userId, string campaignTestKey, string variableKey, string apiName) {
+        public static void VariableNotFound(string file,string variableKey, string campaignTestKey, string campaignType, string userId, string apiName) {
             Log.Error($"({file}): In API: {apiName} Variable: {variableKey} not found for campaign: {campaignTestKey} and type: {campaignType} for user ID: {userId}.");
         }
         
@@ -116,11 +116,11 @@ namespace VWOSdk
         }
 
         public static void TagKeyLengthExceeded(string file, string tagKey, string userId,  string apiName) {
-            Log.Error($"({file}): In API: {apiName}, the length of tag_key:{tagKey} and userID: {userId} can not be greater than 255");
+            Log.Error($"({file}): In API: {apiName}, the length of tagKey:{tagKey} and userID: {userId} can not be greater than 255");
         }
 
-        public static void TagValueLengthExceeded(string file, string tagValue, string userId,  string apiName) {
-            Log.Error($"({file}): In API: {apiName}, the length of tag_value:{tagValue} and userID: {userId} can not be greater than 255");
+        public static void TagValueLengthExceeded(string file, string tagValue, string userId, string apiName) {
+            Log.Error($"({file}): In API: {apiName}, the length of tagValue:{tagValue} and userID: {userId} can not be greater than 255");
         }
 
     }

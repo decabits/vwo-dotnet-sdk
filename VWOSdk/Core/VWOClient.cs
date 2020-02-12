@@ -65,7 +65,7 @@ namespace VWOSdk
                     return null;
                 }
                 if (campaign.Type != Constants.CampaignTypes.VISUAL_AB) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(Activate));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(Activate));
                     return null;
                 }
                 if (campaign.Segments.Count > 0) {
@@ -112,7 +112,7 @@ namespace VWOSdk
                 }
 
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetVariation));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(GetVariation));
                     return null;
                 }
 
@@ -166,7 +166,7 @@ namespace VWOSdk
                 }
 
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(Track));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(Track));
                     return false;
                 }
 
@@ -241,7 +241,7 @@ namespace VWOSdk
                 }
 
                 if (campaign.Type == Constants.CampaignTypes.VISUAL_AB) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(IsFeatureEnabled));
                     return false;
                 }
 
@@ -267,11 +267,11 @@ namespace VWOSdk
 
                         if(result)
                         {
-                           LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                           LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
                         }
                         else
                         {
-                           LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(IsFeatureEnabled));
+                           LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(IsFeatureEnabled));
                         }
                     return result;
                 }
@@ -311,7 +311,7 @@ namespace VWOSdk
                 }
 
                 if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
-                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                    LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId,  campaignTestKey, campaign.Type, nameof(GetFeatureVariableValue));
                     return null;
                 }
 
@@ -339,12 +339,12 @@ namespace VWOSdk
                 {
                     if (!assignedVariation.Variation.IsFeatureEnabled)
                     {
-                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                        LogInfoMessage.FeatureNotEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(GetFeatureVariableValue));
                         assignedVariation = this.GetControlVariation(campaign, campaign.Variations.Find(1, (new VariationAllocator()).GetVariationId));
                     }
                     else
                     {
-                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(GetFeatureVariableValue));
+                        LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignTestKey, userId, nameof(GetFeatureVariableValue));
                     }
                     variables = assignedVariation.Variation.Variables;
                 }
@@ -352,12 +352,12 @@ namespace VWOSdk
                 variable = this.GetVariable(variables, variableKey);
                 if (variable == null || variable.Count == 0)
                 {
-                   LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, campaign.Type, userId, campaignTestKey, variableKey, nameof(GetFeatureVariableValue));
+                   LogErrorMessage.VariableNotFound(typeof(IVWOClient).FullName, variableKey, campaignTestKey, campaign.Type, userId, nameof(GetFeatureVariableValue));
                    return null;
                 }
                 else
                 {
-                    LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, campaign.Type, userId, variableKey,campaignTestKey, nameof(GetFeatureVariableValue));
+                    LogInfoMessage.VariableFound(typeof(IVWOClient).FullName, variableKey, campaignTestKey, campaign.Type, variable["value"] , userId, nameof(GetFeatureVariableValue));
                 }
                 return this._segmentEvaluator.getTypeCastedFeatureValue(variable["value"], variable["type"]);
             }
@@ -379,12 +379,12 @@ namespace VWOSdk
         {
             if (this._validator.Push(tagKey, tagValue, userId)) {
                 if((int)tagKey.Length > (Constants.PushApi.TAG_KEY_LENGTH)) {
-                    LogErrorMessage.TagKeyLengthExceeded(typeof(IVWOClient).FullName, userId, tagKey, nameof(Push));
+                    LogErrorMessage.TagKeyLengthExceeded(typeof(IVWOClient).FullName, tagKey, userId, nameof(Push));
                     return false;
                 }
 
                 if((int)tagValue.Length > (Constants.PushApi.TAG_VALUE_LENGTH)) {
-                    LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, userId, tagKey, nameof(Push));
+                    LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, tagKey,userId, nameof(Push));
                     return false;
                 }
                 ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
@@ -392,7 +392,6 @@ namespace VWOSdk
             }
             return false;
         }
-
 
 
         #endregion IVWOClient Methods

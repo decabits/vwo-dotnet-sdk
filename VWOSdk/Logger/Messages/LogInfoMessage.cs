@@ -62,27 +62,27 @@ namespace VWOSdk
             Log.Info($"({file}): Failed impression event for {endPoint} will be retried after {retryTimeout} milliseconds delay");
         }
 
-        public static void NoCustomVariables(string file, string userId, string campaignTestKey, string apiName) {
+        public static void NoCustomVariables(string file , string userId, string campaignTestKey, string apiName) {
             Log.Info($"({file}): In API: {apiName}, for UserId:{userId} preSegments/customVariables are not passed for campaign:{campaignTestKey} and campaign has pre-segmentation");
         }
 
-        public static void SkippingPreSegmentation(string file, string userId, string campaignTestKey, string apiName) {
+        public static void SkippingPreSegmentation(string file , string userId, string campaignTestKey, string apiName) {
             Log.Info($"({file}): In API: {apiName}, Skipping pre-segmentation for UserId:{userId} as no valid segments found in campaing:{campaignTestKey}");
         }
 
-        public static void FeatureEnabledForUser(string file, string userId, string featureKey, string apiName) 
+        public static void FeatureEnabledForUser(string file, string campaignTestKey, string userId, string apiName) 
         {
-            Log.Info($"({file}): In API: {apiName} Feature having feature-key:{featureKey} for user ID:{userId} is enabled");
+            Log.Info($"({file}): In API: {apiName} Feature having Campaign:{campaignTestKey} for user ID:{userId} is enabled");
         }
 
-        public static void FeatureNotEnabledForUser(string file, string userId, string featureKey, string apiName)
+        public static void FeatureNotEnabledForUser(string file, string campaignTestKey, string userId, string apiName)
         {
-            Log.Error($"({file}): In API: {apiName} Feature having feature-key:{featureKey} for user ID:{userId} is not enabled");
+            Log.Info($"({file}): In API: {apiName} Feature having Campaign:{campaignTestKey} for user ID:{userId} is not enabled");
         }
 
-        public static void VariableFound(string file, string userId,string campaignType, string campaignTestKey, string variableKey, string apiName)
+        public static void VariableFound(string file, string variableKey, string campaignTestKey, string campaignType, string variableValue, string userId, string apiName)
         {
-            Log.Error($"({file}): In API: {apiName} Value for variable:{variableKey} of campaign:{campaignTestKey} and campaign type: {campaignType} for user:{userId}");
+            Log.Info($"({file}): In API: {apiName} Value for variable:{variableKey} of campaign:{campaignTestKey} and campaign type: {campaignType} is: {variableValue} for user:{userId}");
         }
     }
 }
