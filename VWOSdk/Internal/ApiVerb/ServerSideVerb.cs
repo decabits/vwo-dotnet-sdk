@@ -147,7 +147,7 @@ namespace VWOSdk
 
         private static string GetUserTagQuery(string tagKey, string tagValue)
         {
-            return $"u={{\"{tagKey}\":\"{tagValue}\"}}";
+            return $"tags={{\"u\":{{\"{tagKey}\":\"{tagValue}\"}}}}";
         }
 
         private static string GetUuidQuery(string userId, long accountId)

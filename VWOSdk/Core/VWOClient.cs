@@ -17,7 +17,6 @@
 #pragma warning restore 1587
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VWOSdk
 {
@@ -155,7 +154,7 @@ namespace VWOSdk
         public bool Track(string campaignTestKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            var revenueValue = options.ContainsKey("revenue_value") ? options["revenue_value"].ToString() : null;
+            string revenueValue = options.ContainsKey("revenue_value") ? options["revenue_value"].ToString() : null;
             Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
             if(this._validator.Track(campaignTestKey, userId, goalIdentifier, revenueValue, options))
             {
@@ -181,7 +180,6 @@ namespace VWOSdk
                 } else {
                     LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignTestKey, nameof(Track));
                 }
-
 
                 var assignedVariation = this.AllocateVariation(campaignTestKey, userId, goalIdentifier: goalIdentifier, apiName: nameof(Track));
                 var variationName = assignedVariation.Variation?.Name;
@@ -239,7 +237,6 @@ namespace VWOSdk
                     LogErrorMessage.CampaignNotRunning(typeof(IVWOClient).FullName, campaignTestKey, nameof(IsFeatureEnabled));
                     return false;
                 }
-
                 if (campaign.Type == Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignTestKey, campaign.Type, nameof(IsFeatureEnabled));
                     return false;
@@ -275,8 +272,9 @@ namespace VWOSdk
                         }
                         return result;
                     }
-                    return true;
+                    return false;
                 }
+                return true;
             }
             else
             {
