@@ -16,6 +16,8 @@
  */
 #pragma warning restore 1587
 
+using System.Collections.Generic;
+
 namespace VWOSdk
 {
     //Common ErrorMessages among different SDKs.
@@ -83,6 +85,14 @@ namespace VWOSdk
         public static void VariableFound(string file, string variableKey, string campaignKey, string campaignType, string variableValue, string userId, string apiName)
         {
             Log.Info($"({file}): In API: {apiName} Value for variable:{variableKey} of campaign:{campaignKey} and campaign type: {campaignType} is: {variableValue} for user:{userId}");
+        }
+
+        public static void UserPassedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables) {
+            Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{customVariables} passed pre segmentation");
+        }
+
+        public static void UserFailedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables) {
+            Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{customVariables} failed pre segmentation");
         }
     }
 }

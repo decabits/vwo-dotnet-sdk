@@ -72,7 +72,7 @@ namespace VWOSdk
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Activate));
                         customVariables = new Dictionary<string, dynamic>();
                     }
-                    if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
+                    if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables)) {
                         return null;
                     }
                 } else {
@@ -120,7 +120,7 @@ namespace VWOSdk
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(GetVariation));
                         customVariables = new Dictionary<string, dynamic>();
                     }
-                    if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
+                    if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables)) {
                         return null;
                     }
                 } else {
@@ -174,7 +174,7 @@ namespace VWOSdk
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Track));
                         customVariables = new Dictionary<string, dynamic>();
                     }
-                    if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
+                    if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables)) {
                         return false;
                     }
                 } else {
@@ -247,7 +247,7 @@ namespace VWOSdk
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(IsFeatureEnabled));
                         customVariables = new Dictionary<string, dynamic>();
                     }
-                    if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
+                    if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables)) {
                         return false;
                     }
                 } else {
@@ -319,7 +319,7 @@ namespace VWOSdk
                         LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(GetFeatureVariableValue));
                         customVariables = new Dictionary<string, dynamic>();
                     }
-                    if (!this._segmentEvaluator.evaluate(campaign.Segments, customVariables)) {
+                    if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables)) {
                         return null;
                     }
                 } else
