@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>VWO.Sdk</PackageId>
-    <Version>1.3.0</Version>
+    <Version>1.5.0</Version>
     <Authors>Sidhant Gakhar, Varun Malhotra</Authors>
     <Company>Wingify</Company>
     <Product>VWO</Product>
