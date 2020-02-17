@@ -307,7 +307,7 @@ namespace VWOSdk
                     return null;
                 }
 
-                if (campaign.Status == Constants.CampaignTypes.VISUAL_AB) {
+                if (campaign.Type == Constants.CampaignTypes.VISUAL_AB) {
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId,  campaignKey, campaign.Type, nameof(GetFeatureVariableValue));
                     return null;
                 }
@@ -381,7 +381,7 @@ namespace VWOSdk
                 }
 
                 if((int)tagValue.Length > (Constants.PushApi.TAG_VALUE_LENGTH)) {
-                    LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, tagKey,userId, nameof(Push));
+                    LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, tagValue, userId, nameof(Push));
                     return false;
                 }
                 var pushRequest = ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
