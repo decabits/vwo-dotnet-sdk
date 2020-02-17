@@ -20,6 +20,6 @@ namespace VWOSdk
 {
     internal interface IVariationAllocator
     {
-        Variation Allocate(UserProfileMap userProfileMap, BucketedCampaign campaign, string userId);
+        Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId);
     }
 }

@@ -44,13 +44,13 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void Allocate_Should_Compute_Hash_When_UserProfileMap_Is_Null()
+        public void Allocate_Should_Compute_Hash_When_UserStorageMap_Is_Null()
         {
             var mockUserHasher = Mock.GetUserHasher();
             Mock.SetupComputeBucketValue(mockUserHasher, returnVal: 10, outHashValue: 1234567);
             VariationAllocator variationResolver = GetVariationResolver(mockUserHasher);
-            UserProfileMap userProfileMap = null;
-            var selectedVariation = variationResolver.Allocate(userProfileMap, GetCampaign(MockCampaignKey), MockUserId);
+            UserStorageMap userStorageMap = null;
+            var selectedVariation = variationResolver.Allocate(userStorageMap, GetCampaign(MockCampaignKey), MockUserId);
             Assert.NotNull(selectedVariation);
             Assert.Equal(MockVariationName, selectedVariation.Name);
 
@@ -59,12 +59,12 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void Allocate_Should_Not_Compute_Hash_When_Valid_UserProfileMap_With_Valid_Variation_Is_Given()
+        public void Allocate_Should_Not_Compute_Hash_When_Valid_UserStorageMap_With_Valid_Variation_Is_Given()
         {
             var mockUserHasher = MockUserHasher.Get();
             VariationAllocator variationResolver = GetVariationResolver(mockUserHasher);
-            UserProfileMap userProfileMap = new UserProfileMap(MockUserId, MockCampaignKey, MockVariationName);
-            var selectedVariation = variationResolver.Allocate(userProfileMap, GetCampaign(MockCampaignKey), MockUserId);
+            UserStorageMap userStorageMap = new UserStorageMap(MockUserId, MockCampaignKey, MockVariationName);
+            var selectedVariation = variationResolver.Allocate(userStorageMap, GetCampaign(MockCampaignKey), MockUserId);
             Assert.NotNull(selectedVariation);
             Assert.Equal(MockVariationName, selectedVariation.Name);
 
@@ -72,12 +72,12 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void Allocate_Should_Return_Null_When_Valid_UserProfileMap_With_InValid_Variation_Is_Given()
+        public void Allocate_Should_Return_Null_When_Valid_UserStorageMap_With_InValid_Variation_Is_Given()
         {
             var mockUserHasher = MockUserHasher.Get();
             VariationAllocator variationResolver = GetVariationResolver(mockUserHasher);
-            UserProfileMap userProfileMap = new UserProfileMap(MockUserId, MockCampaignKey, MockVariationName + MockVariationName);
-            var selectedVariation = variationResolver.Allocate(userProfileMap, GetCampaign(MockCampaignKey), MockUserId);
+            UserStorageMap userStorageMap = new UserStorageMap(MockUserId, MockCampaignKey, MockVariationName + MockVariationName);
+            var selectedVariation = variationResolver.Allocate(userStorageMap, GetCampaign(MockCampaignKey), MockUserId);
             Assert.Null(selectedVariation);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);

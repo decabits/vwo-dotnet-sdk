@@ -18,14 +18,14 @@
 
 namespace VWOSdk
 {
-    public class UserProfileMap
+    public class UserStorageMap
     {
-        public UserProfileMap()
+        public UserStorageMap()
         {
 
         }
 
-        public UserProfileMap(string userId, string campaignKey, string variationName)
+        public UserStorageMap(string userId, string campaignKey, string variationName)
         {
             this.UserId = userId;
             this.CampaignKey = campaignKey;

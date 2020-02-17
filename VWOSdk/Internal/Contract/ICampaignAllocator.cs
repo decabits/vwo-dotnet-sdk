@@ -20,7 +20,7 @@ namespace VWOSdk
 {
     internal interface ICampaignAllocator
     {
-        BucketedCampaign Allocate(AccountSettings settings, UserProfileMap userProfileMap, string campaignKey, string userId, string apiName = null);
+        BucketedCampaign Allocate(AccountSettings settings, UserStorageMap userStorageMap, string campaignKey, string userId, string apiName = null);
         BucketedCampaign GetCampaign(AccountSettings settings, string campaignKey);
     }
 }

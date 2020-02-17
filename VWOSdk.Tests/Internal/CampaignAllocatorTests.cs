@@ -41,24 +41,24 @@ namespace VWOSdk.Tests
         private readonly string MockVariationName = "VariationName";
 
         [Fact]
-        public void Allocate_Should_Return_Null_When_Valid_UserProfileMap_With_InValid_Campaign_Is_Given()
+        public void Allocate_Should_Return_Null_When_Valid_UserStorageMap_With_InValid_Campaign_Is_Given()
         {
             var mockUserHasher = MockUserHasher.Get();
             var campaignAllocator = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = new UserProfileMap(MockUserId, MockCampaignKey + MockCampaignKey, MockVariationName);
-            var selectedCampaign = campaignAllocator.Allocate(GetAccountSettings(), userProfileMap, MockCampaignKey, MockUserId);
+            UserStorageMap userStorageMap = new UserStorageMap(MockUserId, MockCampaignKey + MockCampaignKey, MockVariationName);
+            var selectedCampaign = campaignAllocator.Allocate(GetAccountSettings(), userStorageMap, MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
         }
 
         [Fact]
-        public void Allocate_Should_Return_Null_When_Valid_UserProfileMap_With_Valid_Campaign_Is_Given_And_Campaign_Is_Not_Running()
+        public void Allocate_Should_Return_Null_When_Valid_UserStorageMap_With_Valid_Campaign_Is_Given_And_Campaign_Is_Not_Running()
         {
             var mockUserHasher = MockUserHasher.Get();
             var campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = new UserProfileMap(MockUserId, MockCampaignKey, MockVariationName);
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "NOT_RUNNING"), userProfileMap, MockCampaignKey, MockUserId);
+            UserStorageMap userStorageMap = new UserStorageMap(MockUserId, MockCampaignKey, MockVariationName);
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "NOT_RUNNING"), userStorageMap, MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
@@ -69,21 +69,21 @@ namespace VWOSdk.Tests
         {
             var mockUserHasher = MockUserHasher.Get();
             var campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = null;
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "RUNNING"), userProfileMap, MockCampaignKey + MockCampaignKey, MockUserId);
+            UserStorageMap userStorageMap = null;
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "RUNNING"), userStorageMap, MockCampaignKey + MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
         }
 
         [Fact]
-        public void Allocate_Should_Compute_Hash_When_UserProfileMap_Is_Null()
+        public void Allocate_Should_Compute_Hash_When_UserStorageMap_Is_Null()
         {
             var mockUserHasher = Mock.GetUserHasher();
             Mock.SetupCompute(mockUserHasher, returnVal: 10);
             CampaignAllocator campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = null;
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userProfileMap, MockCampaignKey, MockUserId);
+            UserStorageMap userStorageMap = null;
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userStorageMap, MockCampaignKey, MockUserId);
             Assert.NotNull(selectedCampaign);
             Assert.Equal(MockCampaignKey, selectedCampaign.Key);
 
@@ -97,8 +97,8 @@ namespace VWOSdk.Tests
             var mockUserHasher = Mock.GetUserHasher();
             Mock.SetupCompute(mockUserHasher, returnVal: 80);
             CampaignAllocator campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = null;
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userProfileMap, MockCampaignKey, MockUserId);
+            UserStorageMap userStorageMap = null;
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userStorageMap, MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);

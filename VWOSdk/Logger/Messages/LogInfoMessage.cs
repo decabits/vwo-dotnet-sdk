@@ -31,17 +31,17 @@ namespace VWOSdk
         {
             Log.Info($"({file}): UserId:{userId} of Campaign:{campaignKey} got variation: {variationName}");
         }
-        public static void LookingUpUserProfileService(string file, string userId, string campaignKey)
+        public static void LookingUpUserStorageService(string file, string userId, string campaignKey)
         {
-            Log.Info($"({file}): Looked into UserProfileService for userId:{userId} and campaign test key: {campaignKey} successful");
+            Log.Info($"({file}): Looked into UserStorageService for userId:{userId} and campaign test key: {campaignKey} successful");
         }
-        public static void SavingDataUserProfileService(string file, string userId)
+        public static void SavingDataUserStorageService(string file, string userId)
         {
-            Log.Info($"({file}): Saving into UserProfileService for userId:{userId} successful");
+            Log.Info($"({file}): Saving into UserStorageService for userId:{userId} successful");
         }
         public static void GotStoredVariation(string file, string variationName, string campaignKey, string userId)
         {
-            Log.Info($"({file}): Got stored variation:{variationName} of campaign:{campaignKey} for userId:{userId} from UserProfileService");
+            Log.Info($"({file}): Got stored variation:{variationName} of campaign:{campaignKey} for userId:{userId} from UserStorageService");
         }
         public static void NoVariationAllocated(string file, string userId, string campaignKey)
         {

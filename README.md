@@ -73,15 +73,15 @@ VWO.Configure(new CustomLogWriter());
 ```c#
 using VWOSdk;
 
-public class UserProfileService : IUserProfileService
+public class UserStorageService : IUserStorageService
 {
-    public UserProfileMap Lookup(string userId)
+    public UserStorageMap Lookup(string userId)
     {
         // ...code here for getting data
         // return data
     }
 
-    public void Save(UserProfileMap userProfileMap)
+    public void Save(UserStorageMap userStorageMap)
     {
         // ...code to persist data
     }
@@ -90,8 +90,8 @@ public class UserProfileService : IUserProfileService
 
 var settingsFile = VWO.GetSettings(VWOConfig.AccountId, VWOConfig.SdkKey);
 
-//  Provide UserProfileService instance while vwoClient Instantiation.
-var vwoClient = VWO.Instantiate(settingsFile, userProfileService: new UserProfileService());
+//  Provide UserStorageService instance while vwoClient Instantiation.
+var vwoClient = VWO.Instantiate(settingsFile, userStorageService: new UserStorageService());
 ```
 
 ## Documentation

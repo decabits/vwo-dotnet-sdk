@@ -105,11 +105,11 @@ namespace VWOSdk
         /// </summary>
         /// <param name="settingFile">Settings as provided by GetSettings call.</param>
         /// <param name="isDevelopmentMode">When running in development or non-production mode. This ensures no operations are tracked on VWO account.</param>
-        /// <param name="userProfileService">UserProfileService to Lookup and Save User-assigned variations.</param>
+        /// <param name="userStorageService">UserStorageService to Lookup and Save User-assigned variations.</param>
         /// <returns>
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>
-        public static IVWOClient CreateInstance(Settings settingFile, bool isDevelopmentMode = false, IUserProfileService userProfileService = null)
+        public static IVWOClient CreateInstance(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null)
         {
             if (Validator.SettingsFile(settingFile))
             {
@@ -122,7 +122,7 @@ namespace VWOSdk
                 if(isDevelopmentMode)
                     LogDebugMessage.SetDevelopmentMode(file);
 
-                var vwoClient = new VWO(accountSettings, Validator, userProfileService, CampaignAllocator, SegmentEvaluator, VariationAllocator, isDevelopmentMode);
+                var vwoClient = new VWO(accountSettings, Validator, userStorageService, CampaignAllocator, SegmentEvaluator, VariationAllocator, isDevelopmentMode);
                 LogDebugMessage.SdkInitialized(file);
                 return vwoClient;
             }

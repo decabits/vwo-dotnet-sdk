@@ -50,19 +50,19 @@ namespace VWOSdk
         }
         public static void NoStoredVariation(string file, string userId, string campaignKey)
         {
-            Log.Debug($"({file}): No stored variation for UserId:{userId} for Campaign:{campaignKey} found in UserProfileService");
+            Log.Debug($"({file}): No stored variation for UserId:{userId} for Campaign:{campaignKey} found in UserStorageService");
         }
-        public static void NoUserProfileServiceLookup(string file)
+        public static void NoUserStorageServiceLookup(string file)
         {
-            Log.Debug($"({file}): No UserProfileService to look for stored data");
+            Log.Debug($"({file}): No UserStorageService to look for stored data");
         }
-        public static void NoUserProfileServiceSave(string file)
+        public static void NoUserStorageServiceSave(string file)
         {
-            Log.Debug($"({file}): No UserProfileService to save data");
+            Log.Debug($"({file}): No UserStorageService to save data");
         }
         public static void GettingStoredVariation(string file, string userId, string campaignKey, string variationName)
         {
-            Log.Debug($"({file}): Got stored variation for UserId:{userId} of Campaign:{campaignKey} as Variation: {variationName}, found in UserProfileService");
+            Log.Debug($"({file}): Got stored variation for UserId:{userId} of Campaign:{campaignKey} as Variation: {variationName}, found in UserStorageService");
         }
         public static void CheckUserEligibilityForCampaign(string file, string campaignKey, double trafficAllocation, string userId)
         {

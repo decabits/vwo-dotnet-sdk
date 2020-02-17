@@ -28,18 +28,18 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// Allocate Variation by checking previously assigned variation if userProfileMap is provided, else by computing User Hash and matching it in bucket for eligible variation.
+        /// Allocate Variation by checking previously assigned variation if userStorageMap is provided, else by computing User Hash and matching it in bucket for eligible variation.
         /// </summary>
-        /// <param name="userProfileMap"></param>
+        /// <param name="userStorageMap"></param>
         /// <param name="campaign"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public Variation Allocate(UserProfileMap userProfileMap, BucketedCampaign campaign, string userId)
+        public Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId)
         {
             if (campaign == null)
                 return null;
 
-            if (userProfileMap == null)
+            if (userStorageMap == null)
             {
                 double maxVal = Constants.Variation.MAX_TRAFFIC_VALUE;
                 double multiplier = maxVal / campaign.PercentTraffic / 100; ///This is to evenly spread all user among variations.
@@ -49,7 +49,7 @@ namespace VWOSdk
                 return selectedVariation;
             }
 
-            return campaign.Variations.Find(userProfileMap.VariationName, GetVariationName);
+            return campaign.Variations.Find(userStorageMap.VariationName, GetVariationName);
         }
 
         private string GetVariationName(Variation variation)

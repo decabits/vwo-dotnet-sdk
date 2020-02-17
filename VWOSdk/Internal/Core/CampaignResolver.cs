@@ -28,21 +28,21 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// Allocate Campaign based on userProfileMap, trafficAllocation by computing userHash for userId and provided CampaignTKey.
+        /// Allocate Campaign based on userStorageMap, trafficAllocation by computing userHash for userId and provided CampaignTKey.
         /// </summary>
         /// <param name="settings"></param>
-        /// <param name="userProfileMap"></param>
+        /// <param name="userStorageMap"></param>
         /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
         /// <param name="apiName">Api name which called this implementation, Activate/GetVariation/Track. This is for logging purpose.</param>
         /// <returns></returns>
-        public BucketedCampaign Allocate(AccountSettings settings, UserProfileMap userProfileMap, string campaignKey, string userId, string apiName = null)
+        public BucketedCampaign Allocate(AccountSettings settings, UserStorageMap userStorageMap, string campaignKey, string userId, string apiName = null)
         {
             BucketedCampaign allocatedCampaign = null;
             BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignKey));
             if (requestedCampaign != null)
             {
-                allocatedCampaign = AllocateCampaign(userId, campaignKey, userProfileMap, requestedCampaign);
+                allocatedCampaign = AllocateCampaign(userId, campaignKey, userStorageMap, requestedCampaign);
 
                 if (allocatedCampaign != null)
                 {
@@ -73,22 +73,22 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// Allocate Campaign based on userProfileMap, of if userProfileMap is not present based on trafficAllocation.
+        /// Allocate Campaign based on userStorageMap, of if userStorageMap is not present based on trafficAllocation.
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="campaignKey"></param>
-        /// <param name="userProfileMap"></param>
+        /// <param name="userStorageMap"></param>
         /// <param name="requestedCampaign"></param>
         /// <returns></returns>
-        private BucketedCampaign AllocateCampaign(string userId, string campaignKey, UserProfileMap userProfileMap, BucketedCampaign requestedCampaign)
+        private BucketedCampaign AllocateCampaign(string userId, string campaignKey, UserStorageMap userStorageMap, BucketedCampaign requestedCampaign)
         {
             BucketedCampaign allocatedCampaign = null;
             LogDebugMessage.CheckUserEligibilityForCampaign(file, campaignKey, requestedCampaign.PercentTraffic, userId);
-            if (userProfileMap == null)
+            if (userStorageMap == null)
             {
                 allocatedCampaign = AllocateByTrafficAllocation(userId, requestedCampaign);
             }
-            else if (userProfileMap.CampaignKey.Equals(requestedCampaign.Key))
+            else if (userStorageMap.CampaignKey.Equals(requestedCampaign.Key))
             {
                 allocatedCampaign = requestedCampaign;
             }

@@ -74,14 +74,14 @@ namespace VWOSdk
             apiName = apiName ?? string.Empty;
             Log.Error($"({file}): API used:{apiName} - Campaign:{campaignKey} is not RUNNING. Please verify from VWO App");
         }
-        public static void LookUpUserProfileServiceFailed(string file, string userId, string campaignKey)
+        public static void LookUpUserStorageServiceFailed(string file, string userId, string campaignKey)
         {
             Log.Error($"({file}): Lookup method could not provide us the stored variation for User Id: {userId} and Campaign test key: {campaignKey}. Please check your User Profile Service lookup implementation.");
-            //Log.Error($"({file}): Looking data from UserProfileService failed for userId:{userId}");
+            //Log.Error($"({file}): Looking data from UserStorageService failed for userId:{userId}");
         }
-        public static void SaveUserProfileServiceFailed(string file, string userId)
+        public static void SaveUserStorageServiceFailed(string file, string userId)
         {
-            Log.Error($"({file}): Saving data into UserProfileService failed for userId:{userId}");
+            Log.Error($"({file}): Saving data into UserStorageService failed for userId:{userId}");
         }
         public static void UnableToTypeCast(string file, string value, string variableType, string ofType)
         {

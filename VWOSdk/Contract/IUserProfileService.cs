@@ -18,7 +18,7 @@
 
 namespace VWOSdk
 {
-    public interface IUserProfileService
+    public interface IUserStorageService
     {
         /// <summary>
         /// Lookup previously allocated Campaign and Variation.
@@ -26,12 +26,12 @@ namespace VWOSdk
         /// <param name="userId">UserId for the user to fetch details.</param>
         /// <param name="campaignKey">Campaign Key to look up.</param>
         /// <returns></returns>
-        UserProfileMap Lookup(string userId, string campaignKey);
+        UserStorageMap Lookup(string userId, string campaignKey);
 
         /// <summary>
         /// Save allocated Campaign and Variation.
         /// </summary>
-        /// <param name="userProfileMap">User details with UserId, Campaign and Variation.</param>
-        void Save(UserProfileMap userProfileMap);
+        /// <param name="userStorageMap">User details with UserId, Campaign and Variation.</param>
+        void Save(UserStorageMap userStorageMap);
     }
 }

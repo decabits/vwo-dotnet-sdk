@@ -38,24 +38,24 @@ namespace VWOSdk.Tests
             MockUserHasher.SetupComputeBucketValue(mockUserHasher, returnVal, outHashValue);
         }
 
-        internal static Mock<IUserProfileService> GetUserProfileService()
+        internal static Mock<IUserStorageService> GetUserStorageService()
         {
-            return MockUserProfileService.Get();
+            return MockUserStorageService.Get();
         }
 
-        internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, UserProfileMap returnValue)
+        internal static void SetupLookup(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
         {
-            MockUserProfileService.SetupLookup(mockUserProfileService, returnValue);
+            MockUserStorageService.SetupLookup(mockUserStorageService, returnValue);
         }
 
-        internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, Exception exception)
+        internal static void SetupLookup(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            MockUserProfileService.SetupLookup(mockUserProfileService, exception);
+            MockUserStorageService.SetupLookup(mockUserStorageService, exception);
         }
 
-        internal static void SetupSave(Mock<IUserProfileService> mockUserProfileService, Exception exception)
+        internal static void SetupSave(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            MockUserProfileService.SetupSave(mockUserProfileService, exception);
+            MockUserStorageService.SetupSave(mockUserStorageService, exception);
         }
 
         internal static Mock<IApiCaller> GetApiCaller<T>(IApiCaller innerApiCaller = null)

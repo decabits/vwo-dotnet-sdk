@@ -20,33 +20,33 @@ using System;
 
 namespace VWOSdk
 {
-    internal class UserProfileAdapter
+    internal class UserStorageAdapter
     {
-        private static readonly string file = typeof(UserProfileAdapter).FullName;
-        private IUserProfileService _userProfileService;
+        private static readonly string file = typeof(UserStorageAdapter).FullName;
+        private IUserStorageService _userStorageService;
 
-        public UserProfileAdapter(IUserProfileService userProfileService)
+        public UserStorageAdapter(IUserStorageService userStorageService)
         {
-            this._userProfileService = userProfileService;
+            this._userStorageService = userStorageService;
         }
 
         /// <summary>
-        /// If UserProfileService is provided, Calls Lookup for given UserId and validate the result.
+        /// If UserStorageService is provided, Calls Lookup for given UserId and validate the result.
         /// </summary>
         /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
         /// <returns>
-        /// Returns userProfileMap if validation is success, else null.
+        /// Returns userStorageMap if validation is success, else null.
         /// </returns>
-        internal UserProfileMap GetUserMap(string campaignKey, string userId)
+        internal UserStorageMap GetUserMap(string campaignKey, string userId)
         {
-            if (this._userProfileService == null)
+            if (this._userStorageService == null)
             {
-                LogDebugMessage.NoUserProfileServiceLookup(file);
+                LogDebugMessage.NoUserStorageServiceLookup(file);
                 return null;
             }
 
-            UserProfileMap userMap = TryGetUserMap(userId, campaignKey);
+            UserStorageMap userMap = TryGetUserMap(userId, campaignKey);
 
             if (userMap == null || string.IsNullOrEmpty(userMap.CampaignKey)
                 || string.IsNullOrEmpty(userMap.VariationName) || string.IsNullOrEmpty(userMap.UserId)
@@ -66,16 +66,16 @@ namespace VWOSdk
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private UserProfileMap TryGetUserMap(string userId, string campaignKey)
+        private UserStorageMap TryGetUserMap(string userId, string campaignKey)
         {
             try
             {
-                LogInfoMessage.LookingUpUserProfileService(file, userId, campaignKey);
-                return this._userProfileService.Lookup(userId, campaignKey);
+                LogInfoMessage.LookingUpUserStorageService(file, userId, campaignKey);
+                return this._userStorageService.Lookup(userId, campaignKey);
             }
             catch (Exception ex)
             {
-                LogErrorMessage.LookUpUserProfileServiceFailed(file, userId, campaignKey);
+                LogErrorMessage.LookUpUserStorageServiceFailed(file, userId, campaignKey);
             }
 
             return null;
@@ -83,21 +83,21 @@ namespace VWOSdk
 
         internal void SaveUserMap(string userId, string campaignKey, string variationName)
         {
-            if (this._userProfileService == null)
+            if (this._userStorageService == null)
             {
-                LogDebugMessage.NoUserProfileServiceSave(file);
+                LogDebugMessage.NoUserStorageServiceSave(file);
                 return;
             }
 
             try
             {
-                LogInfoMessage.SavingDataUserProfileService(file, userId);
-                this._userProfileService.Save(new UserProfileMap(userId, campaignKey, variationName));
+                LogInfoMessage.SavingDataUserStorageService(file, userId);
+                this._userStorageService.Save(new UserStorageMap(userId, campaignKey, variationName));
                 return;
             }
             catch (Exception ex)
             {
-                LogErrorMessage.SaveUserProfileServiceFailed(file, userId);
+                LogErrorMessage.SaveUserStorageServiceFailed(file, userId);
             }
         }
 

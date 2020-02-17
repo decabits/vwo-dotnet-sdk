@@ -22,7 +22,7 @@ namespace VWOSdk
 {
     public partial class VWO : IVWOClient
     {
-        private readonly UserProfileAdapter _userProfileService;
+        private readonly UserStorageAdapter _userStorageService;
         private readonly ICampaignAllocator _campaignAllocator;
         private readonly IVariationAllocator _variationAllocator;
         private readonly ISegmentEvaluator _segmentEvaluator;
@@ -30,11 +30,11 @@ namespace VWOSdk
         private readonly IValidator _validator;
         private readonly bool _isDevelopmentMode;
 
-        internal VWO(AccountSettings settings, IValidator validator, IUserProfileService userProfileService, ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator, IVariationAllocator variationAllocator, bool isDevelopmentMode)
+        internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService, ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator, IVariationAllocator variationAllocator, bool isDevelopmentMode)
         {
             this._settings = settings;
             this._validator = validator;
-            this._userProfileService = new UserProfileAdapter(userProfileService);
+            this._userStorageService = new UserStorageAdapter(userStorageService);
             this._campaignAllocator = campaignAllocator;
             this._variationAllocator = variationAllocator;
             this._isDevelopmentMode = isDevelopmentMode;
@@ -396,7 +396,7 @@ namespace VWOSdk
 
         #region private Methods
         /// <summary>
-        /// Allocate variation by checking UserProfileService, Campaign Traffic Allocation and compute UserHash to check variation allocation by bucketing.
+        /// Allocate variation by checking UserStorageService, Campaign Traffic Allocation and compute UserHash to check variation allocation by bucketing.
         /// </summary>
         /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
@@ -406,17 +406,17 @@ namespace VWOSdk
         /// </returns>
         private UserAllocationInfo AllocateVariation(string campaignKey, string userId, string apiName = null)
         {
-            UserProfileMap userProfileMap = this._userProfileService.GetUserMap(campaignKey, userId);
-            BucketedCampaign selectedCampaign = this._campaignAllocator.Allocate(this._settings, userProfileMap, campaignKey, userId, apiName);
+            UserStorageMap userStorageMap = this._userStorageService.GetUserMap(campaignKey, userId);
+            BucketedCampaign selectedCampaign = this._campaignAllocator.Allocate(this._settings, userStorageMap, campaignKey, userId, apiName);
             if (selectedCampaign != null)
             {
-                Variation variation = this._variationAllocator.Allocate(userProfileMap, selectedCampaign, userId);
+                Variation variation = this._variationAllocator.Allocate(userStorageMap, selectedCampaign, userId);
                 if (variation != null)
                 {
                     LogInfoMessage.VariationAllocated(file, userId, campaignKey, variation.Name);
                     LogDebugMessage.GotVariationForUser(file, userId, campaignKey, variation.Name, nameof(AllocateVariation));
 
-                    this._userProfileService.SaveUserMap(userId, selectedCampaign.Key, variation.Name);
+                    this._userStorageService.SaveUserMap(userId, selectedCampaign.Key, variation.Name);
                     return new UserAllocationInfo(variation, selectedCampaign);
                 }
             }
