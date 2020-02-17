@@ -47,6 +47,7 @@
     <Compile Include="..\VWOSdk\Internal\Extension\Extensions.cs" Link="Internal\Extension\Extensions.cs" />
     <Compile Include="..\VWOSdk\Internal\Helper\AsyncHelper.cs" Link="Internal\Helper\AsyncHelper.cs" />
     <Compile Include="..\VWOSdk\Internal\Helper\UuidV5Helper.cs" Link="Internal\Helper\UuidV5Helper.cs" />
+    <Compile Include="..\VWOSdk\Internal\Helper\DictionaryHelper.cs" Link="Internal\Helper\DictionaryHelper.cs" />
     <Compile Include="..\VWOSdk\Internal\InternalVisibleToVwoTests.cs" Link="Internal\InternalVisibleToVwoTests.cs" />
     <Compile Include="..\VWOSdk\Internal\Model\AccountSettings.cs" Link="Internal\Model\AccountSettings.cs" />
     <Compile Include="..\VWOSdk\Internal\Model\BucketedCampaign.cs" Link="Internal\Model\BucketedCampaign.cs" />

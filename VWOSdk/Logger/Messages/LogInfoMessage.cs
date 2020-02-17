@@ -88,11 +88,11 @@ namespace VWOSdk
         }
 
         public static void UserPassedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables) {
-            Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{customVariables} passed pre segmentation");
+            Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{DictionaryHelper.StringifyCustomVariables(customVariables)} passed pre segmentation");
         }
 
         public static void UserFailedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables) {
-            Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{customVariables} failed pre segmentation");
+            Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{DictionaryHelper.StringifyCustomVariables(customVariables)} failed pre segmentation");
         }
     }
 }
