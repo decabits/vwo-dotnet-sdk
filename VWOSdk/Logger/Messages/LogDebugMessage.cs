@@ -52,13 +52,13 @@ namespace VWOSdk
         {
             Log.Debug($"({file}): No stored variation for UserId:{userId} for Campaign:{campaignKey} found in UserStorageService");
         }
-        public static void NoUserStorageServiceLookup(string file)
+        public static void NoUserStorageServiceGet(string file)
         {
             Log.Debug($"({file}): No UserStorageService to look for stored data");
         }
-        public static void NoUserStorageServiceSave(string file)
+        public static void NoUserStorageServiceSet(string file)
         {
-            Log.Debug($"({file}): No UserStorageService to save data");
+            Log.Debug($"({file}): No UserStorageService to set data");
         }
         public static void GettingStoredVariation(string file, string userId, string campaignKey, string variationName)
         {

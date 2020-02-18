@@ -21,17 +21,17 @@ namespace VWOSdk
     public interface IUserStorageService
     {
         /// <summary>
-        /// Lookup previously allocated Campaign and Variation.
+        /// Get previously allocated Campaign and Variation.
         /// </summary>
         /// <param name="userId">UserId for the user to fetch details.</param>
         /// <param name="campaignKey">Campaign Key to look up.</param>
         /// <returns></returns>
-        UserStorageMap Lookup(string userId, string campaignKey);
+        UserStorageMap Get(string userId, string campaignKey);
 
         /// <summary>
-        /// Save allocated Campaign and Variation.
+        /// Set allocated Campaign and Variation.
         /// </summary>
         /// <param name="userStorageMap">User details with UserId, Campaign and Variation.</param>
-        void Save(UserStorageMap userStorageMap);
+        void Set(UserStorageMap userStorageMap);
     }
 }

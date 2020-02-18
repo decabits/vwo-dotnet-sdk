@@ -43,19 +43,19 @@ namespace VWOSdk.Tests
             return MockUserStorageService.Get();
         }
 
-        internal static void SetupLookup(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
         {
-            MockUserStorageService.SetupLookup(mockUserStorageService, returnValue);
+            MockUserStorageService.SetupGet(mockUserStorageService, returnValue);
         }
 
-        internal static void SetupLookup(Mock<IUserStorageService> mockUserStorageService, Exception exception)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            MockUserStorageService.SetupLookup(mockUserStorageService, exception);
+            MockUserStorageService.SetupGet(mockUserStorageService, exception);
         }
 
-        internal static void SetupSave(Mock<IUserStorageService> mockUserStorageService, Exception exception)
+        internal static void SetupSet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            MockUserStorageService.SetupSave(mockUserStorageService, exception);
+            MockUserStorageService.SetupSet(mockUserStorageService, exception);
         }
 
         internal static Mock<IApiCaller> GetApiCaller<T>(IApiCaller innerApiCaller = null)

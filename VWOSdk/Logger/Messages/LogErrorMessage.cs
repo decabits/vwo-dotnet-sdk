@@ -74,12 +74,12 @@ namespace VWOSdk
             apiName = apiName ?? string.Empty;
             Log.Error($"({file}): API used:{apiName} - Campaign:{campaignKey} is not RUNNING. Please verify from VWO App");
         }
-        public static void LookUpUserStorageServiceFailed(string file, string userId, string campaignKey)
+        public static void GetUserStorageServiceFailed(string file, string userId, string campaignKey)
         {
-            Log.Error($"({file}): Lookup method could not provide us the stored variation for User Id: {userId} and Campaign test key: {campaignKey}. Please check your User Profile Service lookup implementation.");
+            Log.Error($"({file}): Get method could not provide us the stored variation for User Id: {userId} and Campaign test key: {campaignKey}. Please check your User Storage Service Get implementation.");
             //Log.Error($"({file}): Looking data from UserStorageService failed for userId:{userId}");
         }
-        public static void SaveUserStorageServiceFailed(string file, string userId)
+        public static void SetUserStorageServiceFailed(string file, string userId)
         {
             Log.Error($"({file}): Saving data into UserStorageService failed for userId:{userId}");
         }

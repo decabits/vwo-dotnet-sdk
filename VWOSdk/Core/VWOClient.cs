@@ -416,7 +416,7 @@ namespace VWOSdk
                     LogInfoMessage.VariationAllocated(file, userId, campaignKey, variation.Name);
                     LogDebugMessage.GotVariationForUser(file, userId, campaignKey, variation.Name, nameof(AllocateVariation));
 
-                    this._userStorageService.SaveUserMap(userId, selectedCampaign.Key, variation.Name);
+                    this._userStorageService.SetUserMap(userId, selectedCampaign.Key, variation.Name);
                     return new UserAllocationInfo(variation, selectedCampaign);
                 }
             }

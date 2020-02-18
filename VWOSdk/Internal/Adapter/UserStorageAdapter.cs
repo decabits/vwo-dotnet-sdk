@@ -31,7 +31,7 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// If UserStorageService is provided, Calls Lookup for given UserId and validate the result.
+        /// If UserStorageService is provided, Calls Get for given UserId and validate the result.
         /// </summary>
         /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
@@ -42,7 +42,7 @@ namespace VWOSdk
         {
             if (this._userStorageService == null)
             {
-                LogDebugMessage.NoUserStorageServiceLookup(file);
+                LogDebugMessage.NoUserStorageServiceGet(file);
                 return null;
             }
 
@@ -62,7 +62,7 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// Calls Lookup within try to suppress any Exception from outside of SDK application.
+        /// Calls Get within try to suppress any Exception from outside of SDK application.
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -71,33 +71,33 @@ namespace VWOSdk
             try
             {
                 LogInfoMessage.LookingUpUserStorageService(file, userId, campaignKey);
-                return this._userStorageService.Lookup(userId, campaignKey);
+                return this._userStorageService.Get(userId, campaignKey);
             }
             catch (Exception ex)
             {
-                LogErrorMessage.LookUpUserStorageServiceFailed(file, userId, campaignKey);
+                LogErrorMessage.GetUserStorageServiceFailed(file, userId, campaignKey);
             }
 
             return null;
         }
 
-        internal void SaveUserMap(string userId, string campaignKey, string variationName)
+        internal void SetUserMap(string userId, string campaignKey, string variationName)
         {
             if (this._userStorageService == null)
             {
-                LogDebugMessage.NoUserStorageServiceSave(file);
+                LogDebugMessage.NoUserStorageServiceSet(file);
                 return;
             }
 
             try
             {
                 LogInfoMessage.SavingDataUserStorageService(file, userId);
-                this._userStorageService.Save(new UserStorageMap(userId, campaignKey, variationName));
+                this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName));
                 return;
             }
             catch (Exception ex)
             {
-                LogErrorMessage.SaveUserStorageServiceFailed(file, userId);
+                LogErrorMessage.SetUserStorageServiceFailed(file, userId);
             }
         }
 

@@ -105,7 +105,7 @@ namespace VWOSdk
         /// </summary>
         /// <param name="settingFile">Settings as provided by GetSettings call.</param>
         /// <param name="isDevelopmentMode">When running in development or non-production mode. This ensures no operations are tracked on VWO account.</param>
-        /// <param name="userStorageService">UserStorageService to Lookup and Save User-assigned variations.</param>
+        /// <param name="userStorageService">UserStorageService to Get and Save User-assigned variations.</param>
         /// <returns>
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>

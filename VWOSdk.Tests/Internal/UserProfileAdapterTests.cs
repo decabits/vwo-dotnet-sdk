@@ -29,10 +29,10 @@ namespace VWOSdk.Tests
         private readonly string MockVariationName = "MockVariationName";
 
         [Fact]
-        public void GetUserMap_Should_Match_And_Return_Profile_Data_When_LookUp_Returns_Valid_Map()
+        public void GetUserMap_Should_Match_And_Return_Profile_Data_When_Get_Returns_Valid_Map()
         {
             var mockUserStorageService = Mock.GetUserStorageService();
-            Mock.SetupLookup(mockUserStorageService, GetUserStorageMap());
+            Mock.SetupGet(mockUserStorageService, GetUserStorageMap());
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
             var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId);
             Assert.NotNull(result);
@@ -42,47 +42,47 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void GetUserMap_Should_Return_Null_When_LookUp_Returns_InValid_Map()
+        public void GetUserMap_Should_Return_Null_When_Get_Returns_InValid_Map()
         {
             var mockUserStorageService = Mock.GetUserStorageService();
-            Mock.SetupLookup(mockUserStorageService, returnValue: null);
+            Mock.SetupGet(mockUserStorageService, returnValue: null);
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
             var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId);
             Assert.Null(result);
         }
 
         [Fact]
-        public void GetUserMap_Should_Return_Null_When_LookUp_Throws_Execption()
+        public void GetUserMap_Should_Return_Null_When_Get_Throws_Execption()
         {
             var mockUserStorageService = Mock.GetUserStorageService();
-            Mock.SetupLookup(mockUserStorageService, new Exception("Test Method Exception"));
+            Mock.SetupGet(mockUserStorageService, new Exception("Test Method Exception"));
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
             var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId);
             Assert.Null(result);
 
-            mockUserStorageService.Verify(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            mockUserStorageService.Verify(mock => mock.Lookup(It.Is<string>(val => MockUserId.Equals(val)), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
+            mockUserStorageService.Verify(mock => mock.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockUserStorageService.Verify(mock => mock.Get(It.Is<string>(val => MockUserId.Equals(val)), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
         [Fact]
-        public void SaveUserMap_Should_Call_Save_With_Provided_Map()
+        public void SetUserMap_Should_Call_Set_With_Provided_Map()
         {
             var mockUserStorageService = Mock.GetUserStorageService();
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
-            userStorageServiceAdapter.SaveUserMap(MockUserId, MockCampaignKey, MockVariationName);
-            mockUserStorageService.Verify(mock => mock.Save(It.IsAny<UserStorageMap>()), Times.Once);
-            mockUserStorageService.Verify(mock => mock.Save(It.Is<UserStorageMap>(val => Verify(val))), Times.Once);
+            userStorageServiceAdapter.SetUserMap(MockUserId, MockCampaignKey, MockVariationName);
+            mockUserStorageService.Verify(mock => mock.Set(It.IsAny<UserStorageMap>()), Times.Once);
+            mockUserStorageService.Verify(mock => mock.Set(It.Is<UserStorageMap>(val => Verify(val))), Times.Once);
         }
 
         [Fact]
-        public void SaveUserMap_Should_Call_Save_With_Provided_Map_And_Should_Not_Throw_Exception_When_Service_Throws_Exception()
+        public void SetUserMap_Should_Call_Set_With_Provided_Map_And_Should_Not_Throw_Exception_When_Service_Throws_Exception()
         {
             var mockUserStorageService = Mock.GetUserStorageService();
-            Mock.SetupSave(mockUserStorageService, new Exception("Test Method Exception."));
+            Mock.SetupSet(mockUserStorageService, new Exception("Test Method Exception."));
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
-            userStorageServiceAdapter.SaveUserMap(MockUserId, MockCampaignKey, MockVariationName);
-            mockUserStorageService.Verify(mock => mock.Save(It.IsAny<UserStorageMap>()), Times.Once);
-            mockUserStorageService.Verify(mock => mock.Save(It.Is<UserStorageMap>(val => Verify(val))), Times.Once);
+            userStorageServiceAdapter.SetUserMap(MockUserId, MockCampaignKey, MockVariationName);
+            mockUserStorageService.Verify(mock => mock.Set(It.IsAny<UserStorageMap>()), Times.Once);
+            mockUserStorageService.Verify(mock => mock.Set(It.Is<UserStorageMap>(val => Verify(val))), Times.Once);
         }
 
         private bool Verify(UserStorageMap val)

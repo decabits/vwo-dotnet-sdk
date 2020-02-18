@@ -31,18 +31,126 @@ IVWOClient vwoClient = VWO.Instantiate(settingsFile);           //  Create VWO C
 **API usage**
 
 ```c#
+using System.Collections.Generic;
+
 // Activate API
-string variationName = vwoClient.Activate(campaignKey, userId);
+//Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+string variationName = vwoClient.Activate(campaignKey, userId, options);
+
+//With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+string variationName = vwoClient.Activate(campaignKey, userId, options);
 
 // GetVariation API
-string variationName = vwoClient.GetVariation(campaignKey, userId);
+//Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+string variationName = vwoClient.GetVariation(campaignKey, userId, options);
+
+//With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+string variationName = vwoClient.GetVariation(campaignKey, userId, options);
 
 // Track API
 // For CUSTOM CONVERSION Goal
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier);
 
-// For Revenue Goal
-bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, revenueValue);
+//Without Revenue Value and Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+//For only Revenue Value
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    { "revenue_value", 10.2 },
+};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+//For only Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+// For Revenue Value and Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    { "revenue_value", 10.2 },
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+//IsFeatureEnabled API
+//Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+bool isSuccessful = vwo.Client.IsFeatureEnabled(campaignKey, userId, options);
+
+//With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+bool isSuccessful = vwo.Client.IsFeatureEnabled(campaignKey, userId, options);
+
+//GetFeatureVariableValue API
+//Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+dynamic variableValue = vwo.Client.GetFeatureVariableValue(campaignKey, variableKey, userId, options);
+
+//With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+dynamic variableValue = vwo.Client.GetFeatureVariableValue(campaignKey, variableKey, userId, options);
+
+//Push API
+bool isSuccessful = vwo.Client.Push(tagKey, tagValue, userId);
+
+//Pass TagKey
+var TagKey = "abc";
+bool isSuccessful = vwo.Client.Push(TagKey, tagValue, userId);
+
+//Pass TagValue
+var TagValue = "abc";
+bool isSuccessful = vwo.Client.Push(tagKey, TagValue, userId);
 ```
 
 **Configure Log Level**
@@ -68,20 +176,20 @@ public class CustomLogWriter : ILogWriter
 VWO.Configure(new CustomLogWriter());
 ```
 
-**User Profile Service**
+**User Storage Service**
 
 ```c#
 using VWOSdk;
 
 public class UserStorageService : IUserStorageService
 {
-    public UserStorageMap Lookup(string userId)
+    public UserStorageMap Get(string userId)
     {
         // ...code here for getting data
         // return data
     }
 
-    public void Save(UserStorageMap userStorageMap)
+    public void Set(UserStorageMap userStorageMap)
     {
         // ...code to persist data
     }

@@ -28,21 +28,21 @@ namespace VWOSdk.Tests
             return new Mock<IUserStorageService>();
         }
 
-        internal static void SetupLookup(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
         {
-            mockUserStorageService.Setup(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()))
+            mockUserStorageService.Setup(mock => mock.Get(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(returnValue);
         }
 
-        internal static void SetupSave(Mock<IUserStorageService> mockUserStorageService, Exception exception)
+        internal static void SetupSet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            mockUserStorageService.Setup(mock => mock.Save(It.IsAny<UserStorageMap>()))
+            mockUserStorageService.Setup(mock => mock.Set(It.IsAny<UserStorageMap>()))
                 .Throws(exception);
         }
 
-        internal static void SetupLookup(Mock<IUserStorageService> mockUserStorageService, Exception exception)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            mockUserStorageService.Setup(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()))
+            mockUserStorageService.Setup(mock => mock.Get(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
         }
     }
