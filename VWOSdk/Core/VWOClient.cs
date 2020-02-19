@@ -67,17 +67,6 @@ namespace VWOSdk
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(Activate));
                     return null;
                 }
-                if (campaign.Segments.Count > 0) {
-                    if (customVariables == null) {
-                        LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Activate));
-                        customVariables = new Dictionary<string, dynamic>();
-                    }
-                    if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables)) {
-                        return null;
-                    }
-                } else {
-                    LogInfoMessage.SkippingPreSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, nameof(Activate));
-                }
                 var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, apiName: nameof(Activate));
                 if (assignedVariation.Variation != null)
                 {
