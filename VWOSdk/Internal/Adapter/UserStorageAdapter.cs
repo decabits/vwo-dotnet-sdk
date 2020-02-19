@@ -57,7 +57,6 @@ namespace VWOSdk
             }
 
             LogInfoMessage.GotStoredVariation(file, userMap.VariationName, campaignKey, userId);
-            LogDebugMessage.GettingStoredVariation(file, userId, campaignKey, userMap.VariationName);
             return userMap;
         }
 

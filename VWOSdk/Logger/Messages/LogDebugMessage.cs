@@ -60,10 +60,7 @@ namespace VWOSdk
         {
             Log.Debug($"({file}): No UserStorageService to set data");
         }
-        public static void GettingStoredVariation(string file, string userId, string campaignKey, string variationName)
-        {
-            Log.Debug($"({file}): Got stored variation for UserId:{userId} of Campaign:{campaignKey} as Variation: {variationName}, found in UserStorageService");
-        }
+
         public static void CheckUserEligibilityForCampaign(string file, string campaignKey, double trafficAllocation, string userId)
         {
             Log.Debug($"({file}): campaign:{campaignKey} having traffic allocation:{trafficAllocation} assigned value:{trafficAllocation} to userId:{userId}");

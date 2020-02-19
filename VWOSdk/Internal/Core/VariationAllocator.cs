@@ -52,6 +52,10 @@ namespace VWOSdk
             return campaign.Variations.Find(userStorageMap.VariationName, GetVariationName);
         }
 
+        public Variation GetSavedVariation(BucketedCampaign campaign, string variationName) {
+            return campaign.Variations.Find(variationName, GetVariationName);
+        }
+
         private string GetVariationName(Variation variation)
         {
             return variation.Name;

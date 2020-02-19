@@ -21,5 +21,7 @@ namespace VWOSdk
     internal interface IVariationAllocator
     {
         Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId);
+
+        Variation GetSavedVariation(BucketedCampaign campaign, string variationName);
     }
 }
