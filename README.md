@@ -46,7 +46,7 @@ public readonly static Dictionary<string, dynamic> options = new Dictionary<stri
         {
             {"price", 100.1}
         },
-        "variationTargettingVariable", new Dictionary<string, dynamic>()
+        "variationTargetingVariables", new Dictionary<string, dynamic>()
         {
             {"_vwoUserId", "User"}
         }
@@ -68,7 +68,7 @@ public static Dictionary<string, dynamic> options = new Dictionary<string, dynam
         {
             {"gender", 'f'}
         }
-        "variationTargettingVariable", new Dictionary<string, dynamic>()
+        "variationTargetingVariables", new Dictionary<string, dynamic>()
         {
             {"_vwoUserId", "User"}
         }
@@ -118,7 +118,7 @@ public static Dictionary<string, dynamic> options = new Dictionary<string, dynam
       }
     },
     {
-      "variationTargettingVariable", new Dictionary<string, dynamic>()
+      "variationTargetingVariables", new Dictionary<string, dynamic>()
       {
           {
               "abcd", 1
