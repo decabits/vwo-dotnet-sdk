@@ -48,7 +48,7 @@ public readonly static Dictionary<string, dynamic> options = new Dictionary<stri
         },
         "variationTargettingVariable", new Dictionary<string, dynamic>()
         {
-            {"_vwo_user_id", "User"}
+            {"_vwoUserId", "User"}
         }
     }
 };
@@ -70,7 +70,7 @@ public static Dictionary<string, dynamic> options = new Dictionary<string, dynam
         }
         "variationTargettingVariable", new Dictionary<string, dynamic>()
         {
-            {"_vwo_user_id", "User"}
+            {"_vwoUserId", "User"}
         }
     }
 };
