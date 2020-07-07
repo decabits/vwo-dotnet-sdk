@@ -30,8 +30,10 @@ namespace VWOSdk
         private readonly AccountSettings _settings;
         private readonly IValidator _validator;
         private readonly bool _isDevelopmentMode;
+        private readonly string _goalTypeToTrack;
+         private readonly bool _shouldTrackReturningUser;
 
-        internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService, ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator, IVariationAllocator variationAllocator, bool isDevelopmentMode)
+        internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService, ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator, IVariationAllocator variationAllocator, bool isDevelopmentMode, string goalTypeToTrack = Constants.GoalTypes.ALL, bool shouldTrackReturningUser = false)
         {
             this._settings = settings;
             this._validator = validator;
@@ -40,6 +42,8 @@ namespace VWOSdk
             this._variationAllocator = variationAllocator;
             this._isDevelopmentMode = isDevelopmentMode;
             this._segmentEvaluator = segmentEvaluator;
+            this._goalTypeToTrack = goalTypeToTrack;
+            this._shouldTrackReturningUser = shouldTrackReturningUser;
         }
 
         #region IVWOClient Methods
@@ -145,9 +149,13 @@ namespace VWOSdk
             string revenueValue = options.ContainsKey("revenueValue") ? options["revenueValue"].ToString() : null;
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
+            String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
+            Boolean shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
 
             if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
             {
+                goalTypeToTrack = !string.IsNullOrEmpty(goalTypeToTrack) ? goalTypeToTrack : this._goalTypeToTrack != null ? this._goalTypeToTrack : Constants.GoalTypes.ALL;
+                shouldTrackReturningUser = shouldTrackReturningUser || this._shouldTrackReturningUser;
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING)
                 {
@@ -168,6 +176,14 @@ namespace VWOSdk
                 {
                     if (string.IsNullOrEmpty(selectedGoalIdentifier) == false)
                     {
+                        if (goalTypeToTrack != assignedVariation.Goal.Type && goalTypeToTrack != Constants.GoalTypes.ALL) {
+                            return false;
+                        }
+
+                        if (!this.isGoalTriggerRequired(campaignKey, userId, goalIdentifier, variationName, shouldTrackReturningUser)) {
+                            return false;
+                        }
+
                         bool sendImpression = true;
                         if (assignedVariation.Goal.IsRevenueType() && string.IsNullOrEmpty(revenueValue))
                         {
@@ -193,6 +209,54 @@ namespace VWOSdk
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Tracks a conversion event for a particular user for a running server-side campaign.
+        /// </summary>
+        /// <param name="campaignKeys">Campaign keys to uniquely identify list of server-side campaigns.</param>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server for report generation.
+        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+        public Dictionary<string, bool> Track(List <string> campaignKeys, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
+        {
+            Dictionary<string, bool> result = new Dictionary<string, bool>();
+            foreach (string campaignKey in campaignKeys) {
+                result[campaignKey] = this.Track(campaignKey, userId, goalIdentifier, options);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Tracks a conversion event for a particular user for a running server-side campaign.
+        /// </summary>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="goalIdentifier">The Goal key to uniquely identify a goal of a server-side campaign.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server for report generation.
+        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+        public Dictionary<string, bool> Track(string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
+        {
+            String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
+            Boolean shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
+            Dictionary<string, bool> result = new Dictionary<string, bool>();
+
+            foreach (Campaign campaign in this._settings.Campaigns) {
+                foreach(Goal goal in campaign.Goals) {
+                    if (goal != null && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Type)) {
+                        result[campaign.Key] = this.Track(campaign.Key, userId, goalIdentifier, options);
+                    }
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -523,6 +587,24 @@ namespace VWOSdk
                 LogErrorMessage.TrackApiVariationNotFound(file, campaignKey, userId);
             }
             return userAllocationInfo;
+        }
+
+        private bool isGoalTriggerRequired(string campaignKey, string userId, string goalIdentifier, string variationName, bool shouldTrackReturningUser)
+        {
+            UserStorageMap userMap = this._userStorageService.GetUserMap(campaignKey, userId);
+            string storedGoalIdentifier = null;
+            if (userMap != null && userMap.GoalIdentifier != null) {
+                storedGoalIdentifier = userMap.GoalIdentifier;
+                string[] identifiers = storedGoalIdentifier.Split(Constants.GOAL_IDENTIFIER_SEPERATOR.ToCharArray());
+                if (!((IList<string>)identifiers).Contains(goalIdentifier)) {
+                    storedGoalIdentifier = storedGoalIdentifier + Constants.GOAL_IDENTIFIER_SEPERATOR + goalIdentifier;
+                } else if (!shouldTrackReturningUser) {
+                    LogInfoMessage.GoalAlreadyTracked(file, userId, campaignKey, goalIdentifier);
+                    return false;
+                }
+            }
+            this._userStorageService.SetUserMap(userId, campaignKey, variationName, storedGoalIdentifier);
+            return true;
         }
 
         #endregion private Methods

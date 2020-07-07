@@ -63,6 +63,8 @@ namespace VWOSdk
             result = ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(Track)) && result;
             result = ValidateWithLog(() => ValidateString(goalIdentifier), nameof(goalIdentifier), nameof(Track)) && result;
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
+            String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
+            result = ValidateWithLog(() => goalTypeToTrack == null || Constants.GoalTypes.VALUES.Contains(goalTypeToTrack), nameof(goalIdentifier), nameof(Track)) && result;
             return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(revenueValue), nameof(Track)) && result;
         }
 

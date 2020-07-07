@@ -80,7 +80,7 @@ namespace VWOSdk
             return null;
         }
 
-        internal void SetUserMap(string userId, string campaignKey, string variationName)
+        internal void SetUserMap(string userId, string campaignKey, string variationName, string goalIdentifier = null)
         {
             if (this._userStorageService == null)
             {
@@ -91,7 +91,7 @@ namespace VWOSdk
             try
             {
                 LogInfoMessage.SavingDataUserStorageService(file, userId);
-                this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName));
+                this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName, goalIdentifier));
                 return;
             }
             catch (Exception ex)
