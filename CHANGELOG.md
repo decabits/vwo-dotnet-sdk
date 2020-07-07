@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changes
 - Update track API to handle duplicate and unique conversions and corresponding changes in `Launch` API
 - Update track API to track a goal globally across campaigns with the same `goalIdentififer` and corresponding changes in `Launch` API
-```js
+```c#
 // it will track goal having `goalIdentifier` of campaign having `campaignKey` for the user having `userId` as id. 
-vwoClientInstance.track(campaignKey, userId, goalIdentifier, options);
+vwoClientInstance.Track(campaignKey, userId, goalIdentifier, options);
 // it will track goal having `goalIdentifier` of campaigns having `campaignKey1` and `campaignKey2` for the user having `userId` as id.
-vwoClientInstance.track(new List<string>() { campaignKey1, campaignKey2 }, userId, goalIdentifier, options);
+vwoClientInstance.Track(new List<string>() { campaignKey1, campaignKey2 }, userId, goalIdentifier, options);
 // it will track goal having `goalIdentifier` of all the campaigns
-vwoClientInstance.track(null, userId, goalIdentifier, options);
+vwoClientInstance.Track(userId, goalIdentifier, options);
 //Read more about configuration and usage - https://developers.vwo.com/reference#server-side-sdk-track
 ```
 

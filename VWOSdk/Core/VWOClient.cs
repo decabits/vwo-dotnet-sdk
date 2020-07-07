@@ -248,13 +248,18 @@ namespace VWOSdk
             String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
             Boolean shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
             Dictionary<string, bool> result = new Dictionary<string, bool>();
+            bool campaignFound = false;
 
             foreach (Campaign campaign in this._settings.Campaigns) {
                 foreach(Goal goal in campaign.Goals) {
                     if (goal != null && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Type)) {
+                        campaignFound = true;
                         result[campaign.Key] = this.Track(campaign.Key, userId, goalIdentifier, options);
                     }
                 }
+            }
+            if (!campaignFound) {
+                LogErrorMessage.NoCampaignForGoalFound(file, goalIdentifier);
             }
             return result;
         }
