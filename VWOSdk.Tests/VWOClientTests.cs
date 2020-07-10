@@ -40,7 +40,7 @@ namespace VWOSdk.Tests
 
         private readonly Dictionary<string, dynamic> MockTrackShouldTrackReturningUser= new Dictionary<string, dynamic>() {
             {"revenueValue", 1},
-            {"shouldTrackReturningUser", true   }
+            {"shouldTrackReturningUser", true }
         };
 
         private readonly Dictionary<string, dynamic> MockTrackOptionsRevenueGoal = new Dictionary<string, dynamic>() {
@@ -2324,7 +2324,7 @@ namespace VWOSdk.Tests
             var mockApiCaller = Mock.GetApiCaller<Settings>();
             AppContext.Configure(mockApiCaller.Object);
             var mockUserStorageService = Mock.GetUserStorageService();
-            Mock.SetupGet(mockUserStorageService, GetUserStorageMap(goalIdentifier: MockGoalIdentifier));
+            Mock.SetupGet(mockUserStorageService, GetUserStorageMap(goalIdentifier: "TEST"));
             var mockValidator = Mock.GetValidator();
             var mockCampaignResolver = Mock.GetCampaignAllocator();
             var selectedCampaign = GetCampaign();
@@ -2333,16 +2333,17 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockUserStorageService: null);
+            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockUserStorageService: mockUserStorageService);
             var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
             Assert.True(result[MockCampaignKey]);
             Assert.True(result[MockCampaignKey1]);
 
+            Mock.SetupGet(mockUserStorageService, GetUserStorageMap(goalIdentifier: MockGoalIdentifier));
             var vwoClientWithUserStorage = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockUserStorageService: mockUserStorageService);
             // As ShouldTrackReturningUser is not set i.e False, should not fire again.
-            var resultRevenue = vwoClientWithUserStorage.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
+            var resultRevenue = vwoClientWithUserStorage.Track(new List<string>() { MockCampaignKey, "MockCampaignKey2" }, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
             Assert.False(resultRevenue[MockCampaignKey]);
-            Assert.False(resultRevenue[MockCampaignKey1]);
+            Assert.False(resultRevenue["MockCampaignKey2"]);
 
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.AtLeastOnce);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
@@ -2376,6 +2377,27 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
         }
 
+        [Fact]
+        public void Track_Should_Not_Fire_For_Disallowed_Goal_Type()
+        {
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign(goalType: "NON_EXISTENT_GOAL_TYPE");
+            var otherCampaign = GetCampaign(campaignKey: MockCampaignKey1, goalType: "NON_EXISTENT_GOAL_TYPE");
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign, otherCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            Mock.SetupResolve(mockVariationResolver, GetVariation());
+
+            var vwoClient = GetVwoClient(settingType: "NonExistentGoalType", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
+            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier, MockTrackOptionsCustomGoal);
+            Assert.False(result[MockCampaignKey]);
+            Assert.False(result[MockCampaignKey1]);
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.AtLeastOnce);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
+        }
 
         private bool VerifyTrackUserVerb(ApiRequest apiRequest)
         {
@@ -2425,6 +2447,11 @@ namespace VWOSdk.Tests
         private List<BucketedCampaign> GetCampaigns(string settingType = null, string status = "running")
         {
             var result = new List<BucketedCampaign>();
+            if (settingType == "NonExistentGoalType") {
+                result.Add(GetCampaign(campaignKey: MockCampaignKey, status: status, goalType: "NON_EXISTENT_GOAL_TYPE"));
+                result.Add(GetCampaign(campaignKey: MockCampaignKey1, status: status, goalType: "NON_EXISTENT_GOAL_TYPE"));
+                return result;
+            }
             if (settingType == "GoalTypeCustom") {
                 result.Add(GetCampaign(campaignKey: MockCampaignKey, status: status, goalType: Constants.GoalTypes.CUSTOM));
                 result.Add(GetCampaign(campaignKey: MockCampaignKey1, status: status, goalType: Constants.GoalTypes.CUSTOM));
@@ -2461,7 +2488,7 @@ namespace VWOSdk.Tests
 
         private Goal GetGoal(string type = null)
         {
-            type = type ?? "REVENUE_TRACKING";
+            type = type ?? Constants.GoalTypes.REVENUE;
             return new Goal(-3, MockGoalIdentifier, type);
         }
 

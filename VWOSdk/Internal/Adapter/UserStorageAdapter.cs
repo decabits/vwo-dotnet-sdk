@@ -54,7 +54,6 @@ namespace VWOSdk
                 LogDebugMessage.NoStoredVariation(file, userId, campaignKey);
                 return null;
             }
-
             LogInfoMessage.GotStoredVariation(file, userMap.VariationName, campaignKey, userId);
             return userMap;
         }

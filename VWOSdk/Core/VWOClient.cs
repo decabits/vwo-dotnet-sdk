@@ -168,7 +168,6 @@ namespace VWOSdk
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(Track));
                     return false;
                 }
-
                 var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, goalIdentifier: goalIdentifier, apiName: nameof(Track));
                 var variationName = assignedVariation.Variation?.Name;
                 var selectedGoalIdentifier = assignedVariation.Goal?.Identifier;
@@ -179,11 +178,9 @@ namespace VWOSdk
                         if (goalTypeToTrack != assignedVariation.Goal.Type && goalTypeToTrack != Constants.GoalTypes.ALL) {
                             return false;
                         }
-
                         if (!this.isGoalTriggerRequired(campaignKey, userId, goalIdentifier, variationName, shouldTrackReturningUser)) {
                             return false;
                         }
-
                         bool sendImpression = true;
                         if (assignedVariation.Goal.IsRevenueType() && string.IsNullOrEmpty(revenueValue))
                         {
@@ -604,7 +601,7 @@ namespace VWOSdk
             string storedGoalIdentifier = null;
             if (userMap != null && userMap.GoalIdentifier != null) {
                 storedGoalIdentifier = userMap.GoalIdentifier;
-                string[] identifiers = storedGoalIdentifier.Split(Constants.GOAL_IDENTIFIER_SEPERATOR.ToCharArray());
+                string[] identifiers = storedGoalIdentifier.Split(new string[] { Constants.GOAL_IDENTIFIER_SEPERATOR }, StringSplitOptions.None);
                 if (!((IList<string>)identifiers).Contains(goalIdentifier)) {
                     storedGoalIdentifier = storedGoalIdentifier + Constants.GOAL_IDENTIFIER_SEPERATOR + goalIdentifier;
                 } else if (!shouldTrackReturningUser) {
