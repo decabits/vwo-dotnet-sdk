@@ -90,7 +90,7 @@ namespace VWOSdk
         public bool SettingsFile(Settings settingsFile)
         {
             var result = NotNull(settingsFile);
-            result = result && ValidateLong(settingsFile.AccountId) && ValidateString(settingsFile.SdkKey);
+            result = result && ValidateLong(settingsFile.AccountId);
             result = result && Validate(settingsFile.Campaigns);
             return result;
         }
