@@ -47,7 +47,6 @@ namespace VWOSdk
             }
 
             UserStorageMap userMap = TryGetUserMap(userId, campaignKey);
-
             if (userMap == null || string.IsNullOrEmpty(userMap.CampaignKey)
                 || string.IsNullOrEmpty(userMap.VariationName) || string.IsNullOrEmpty(userMap.UserId)
                 || string.Equals(userMap.UserId, userId) == false || string.Equals(userMap.CampaignKey, campaignKey) == false)

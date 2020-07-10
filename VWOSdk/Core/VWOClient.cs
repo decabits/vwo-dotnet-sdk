@@ -149,8 +149,8 @@ namespace VWOSdk
             string revenueValue = options.ContainsKey("revenueValue") ? options["revenueValue"].ToString() : null;
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
-            String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
-            Boolean shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
+            string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
+            bool shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
 
             if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
             {
@@ -245,14 +245,17 @@ namespace VWOSdk
         /// </returns>
         public Dictionary<string, bool> Track(string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
         {
-            String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
-            Boolean shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
+            if (options == null) options = new Dictionary<string, dynamic>();
+            string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
+            bool shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
+            goalTypeToTrack = !string.IsNullOrEmpty(goalTypeToTrack) ? goalTypeToTrack : this._goalTypeToTrack != null ? this._goalTypeToTrack : Constants.GoalTypes.ALL;
+            shouldTrackReturningUser = shouldTrackReturningUser || this._shouldTrackReturningUser;
+
             Dictionary<string, bool> result = new Dictionary<string, bool>();
             bool campaignFound = false;
-
-            foreach (Campaign campaign in this._settings.Campaigns) {
-                foreach(Goal goal in campaign.Goals) {
-                    if (goal != null && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Type)) {
+            foreach (BucketedCampaign campaign in this._settings.Campaigns) {
+                foreach(KeyValuePair<string, Goal> goal in campaign.Goals) {
+                    if (goal.Key != null && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Value.Type)) {
                         campaignFound = true;
                         result[campaign.Key] = this.Track(campaign.Key, userId, goalIdentifier, options);
                     }
@@ -260,6 +263,7 @@ namespace VWOSdk
             }
             if (!campaignFound) {
                 LogErrorMessage.NoCampaignForGoalFound(file, goalIdentifier);
+                return null;
             }
             return result;
         }
