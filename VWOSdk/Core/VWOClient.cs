@@ -598,8 +598,9 @@ namespace VWOSdk
         private bool isGoalTriggerRequired(string campaignKey, string userId, string goalIdentifier, string variationName, bool shouldTrackReturningUser)
         {
             UserStorageMap userMap = this._userStorageService.GetUserMap(campaignKey, userId);
+            if (userMap == null) return true;
             string storedGoalIdentifier = null;
-            if (userMap != null && userMap.GoalIdentifier != null) {
+            if (userMap.GoalIdentifier != null) {
                 storedGoalIdentifier = userMap.GoalIdentifier;
                 string[] identifiers = storedGoalIdentifier.Split(new string[] { Constants.GOAL_IDENTIFIER_SEPERATOR }, StringSplitOptions.None);
                 if (!((IList<string>)identifiers).Contains(goalIdentifier)) {
@@ -608,6 +609,8 @@ namespace VWOSdk
                     LogInfoMessage.GoalAlreadyTracked(file, userId, campaignKey, goalIdentifier);
                     return false;
                 }
+            } else {
+                storedGoalIdentifier = goalIdentifier;
             }
             this._userStorageService.SetUserMap(userId, campaignKey, variationName, storedGoalIdentifier);
             return true;
