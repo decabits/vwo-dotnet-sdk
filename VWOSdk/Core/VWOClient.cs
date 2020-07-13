@@ -252,7 +252,7 @@ namespace VWOSdk
             bool campaignFound = false;
             foreach (BucketedCampaign campaign in this._settings.Campaigns) {
                 foreach(KeyValuePair<string, Goal> goal in campaign.Goals) {
-                    if (goal.Key != null && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Value.Type)) {
+                    if (goal.Key != null && goalIdentifier == goal.Value.Identifier && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Value.Type)) {
                         campaignFound = true;
                         result[campaign.Key] = this.Track(campaign.Key, userId, goalIdentifier, options);
                     }

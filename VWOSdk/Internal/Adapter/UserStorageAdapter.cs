@@ -88,8 +88,8 @@ namespace VWOSdk
 
             try
             {
-                LogInfoMessage.SavingDataUserStorageService(file, userId);
                 this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName, goalIdentifier));
+                LogInfoMessage.SavingDataUserStorageService(file, userId);
                 return;
             }
             catch (Exception ex)
