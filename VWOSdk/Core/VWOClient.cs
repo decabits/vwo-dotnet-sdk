@@ -31,7 +31,7 @@ namespace VWOSdk
         private readonly IValidator _validator;
         private readonly bool _isDevelopmentMode;
         private readonly string _goalTypeToTrack;
-         private readonly bool _shouldTrackReturningUser;
+        private readonly bool _shouldTrackReturningUser;
 
         internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService, ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator, IVariationAllocator variationAllocator, bool isDevelopmentMode, string goalTypeToTrack = Constants.GoalTypes.ALL, bool shouldTrackReturningUser = false)
         {
