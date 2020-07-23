@@ -150,12 +150,11 @@ namespace VWOSdk
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
-            bool shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
+            bool shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : this._shouldTrackReturningUser;
 
             if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
             {
                 goalTypeToTrack = !string.IsNullOrEmpty(goalTypeToTrack) ? goalTypeToTrack : this._goalTypeToTrack != null ? this._goalTypeToTrack : Constants.GoalTypes.ALL;
-                shouldTrackReturningUser = shouldTrackReturningUser || this._shouldTrackReturningUser;
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
                 if (campaign == null || campaign.Status != Constants.CampaignStatus.RUNNING)
                 {
@@ -244,9 +243,8 @@ namespace VWOSdk
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
-            bool shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : false;
+            bool shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : this._shouldTrackReturningUser;
             goalTypeToTrack = !string.IsNullOrEmpty(goalTypeToTrack) ? goalTypeToTrack : this._goalTypeToTrack != null ? this._goalTypeToTrack : Constants.GoalTypes.ALL;
-            shouldTrackReturningUser = shouldTrackReturningUser || this._shouldTrackReturningUser;
 
             Dictionary<string, bool> result = new Dictionary<string, bool>();
             bool campaignFound = false;
