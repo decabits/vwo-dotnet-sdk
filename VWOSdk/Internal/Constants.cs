@@ -141,7 +141,7 @@ namespace VWOSdk
         public static class GoalTypes
         {
             internal const string REVENUE = "REVENUE_TRACKING";
-            internal const string CUSTOM = "CUSTOM";
+            internal const string CUSTOM = "CUSTOM_GOAL";
             internal const string ALL = "ALL";
 
             internal static List<string> VALUES =  new List<string>() {
