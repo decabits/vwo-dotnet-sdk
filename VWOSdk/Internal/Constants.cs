@@ -145,7 +145,7 @@ namespace VWOSdk
             internal const string ALL = "ALL";
 
             internal static List<string> VALUES =  new List<string>() {
-                "REVENUE_TRACKING", "CUSTOM", "ALL"
+                "REVENUE_TRACKING", "CUSTOM_GOAL", "ALL"
             };
         }
     }
